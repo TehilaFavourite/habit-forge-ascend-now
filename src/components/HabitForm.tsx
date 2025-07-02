@@ -38,6 +38,8 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
       return;
     }
 
+    console.log('Creating habit with data:', formData);
+
     addHabit({
       ...formData,
       userId: user?.id || '',
