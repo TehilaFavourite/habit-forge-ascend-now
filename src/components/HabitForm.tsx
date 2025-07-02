@@ -51,8 +51,8 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-4">
           <DialogTitle className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             Create New Habit
           </DialogTitle>
@@ -61,7 +61,7 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Habit Name */}
           <div className="space-y-2">
             <Label htmlFor="habit-name">Habit Name</Label>
@@ -83,7 +83,7 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
                   key={icon}
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, icon }))}
-                  className={`p-3 rounded-lg border-2 transition-all text-xl ${
+                  className={`p-2 rounded-lg border-2 transition-all text-lg ${
                     formData.icon === icon
                       ? 'border-purple-500 bg-purple-50'
                       : 'border-gray-200 hover:border-gray-300'
@@ -104,7 +104,7 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
                   key={color}
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, color }))}
-                  className={`w-12 h-12 rounded-lg border-4 transition-all ${
+                  className={`w-10 h-10 rounded-lg border-4 transition-all ${
                     formData.color === color
                       ? 'border-gray-400 scale-110'
                       : 'border-gray-200 hover:scale-105'
@@ -143,7 +143,7 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
           </div>
 
           {/* Core Habit Toggle */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-2">
             <div className="space-y-0.5">
               <Label>Core Habit</Label>
               <p className="text-sm text-gray-500">Include in day mastery tracking</p>
@@ -154,8 +154,8 @@ export const HabitForm = ({ onClose }: HabitFormProps) => {
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3 pt-4">
+          {/* Actions - Fixed at bottom */}
+          <div className="flex gap-3 pt-6 border-t sticky bottom-0 bg-white">
             <Button
               type="button"
               variant="outline"
