@@ -1,17 +1,25 @@
+
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useHabitStore } from '@/stores/habitStore';
 import { useTodoStore } from '@/stores/todoStore';
+import { useXPStore } from '@/stores/xpStore';
+import { useRewardsStore } from '@/stores/rewardsStore';
+import { HistoricalView } from '@/components/HistoricalView';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Calendar, Target, CheckCircle2, Trophy, Zap, TrendingUp } from 'lucide-react';
+import { Calendar, Target, CheckCircle2, Trophy, Zap, TrendingUp, History, Star } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, subWeeks, addDays } from 'date-fns';
 
 export const ProgressReport = () => {
   const { user } = useAuthStore();
   const { habits } = useHabitStore();
   const { todos } = useTodoStore();
+  const { getTotalXPForUser, getTotalXPForDate } = useXPStore();
+  const { getRewardsForUser, getNextReward, getCurrentLevel } = useRewardsStore();
+  const [showHistorical, setShowHistorical] = useState(false);
 
   // Date Management
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -33,6 +41,12 @@ export const ProgressReport = () => {
   const totalTasks = userTodos.length;
   const completedTasks = userTodos.filter(todo => todo.completed).length;
   const taskCompletionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+  // XP and Level Calculation
+  const totalXP = getTotalXPForUser(user?.id || '');
+  const todayXP = getTotalXPForDate(format(currentDate, 'yyyy-MM-dd'), user?.id || '');
+  const currentLevel = getCurrentLevel(user?.id || '', totalXP);
+  const nextReward = getNextReward(user?.id || '', totalXP);
 
   // Streak Calculation (Simplified - needs actual streak logic)
   const currentStreak = 7; // Placeholder
@@ -58,6 +72,14 @@ export const ProgressReport = () => {
           <p className="text-gray-600 mt-1">Stay motivated and track your achievements</p>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            onClick={() => setShowHistorical(true)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <History className="h-4 w-4" />
+            View History
+          </Button>
           <button onClick={goToPreviousWeek} className="p-2 rounded-full hover:bg-gray-100 transition-colors">
             <Calendar className="h-5 w-5 text-gray-500 transform rotate-180" />
           </button>
@@ -67,6 +89,44 @@ export const ProgressReport = () => {
           </button>
         </div>
       </div>
+
+      {/* Level and XP Overview */}
+      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-0 shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star className="h-5 w-5 text-yellow-600" />
+            Level Progress
+          </CardTitle>
+          <CardDescription>Your current level and experience points</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">{currentLevel}</div>
+              <div className="text-sm text-gray-600">Current Level</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600">{totalXP}</div>
+              <div className="text-sm text-gray-600">Total XP</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">{todayXP}</div>
+              <div className="text-sm text-gray-600">Today's XP</div>
+            </div>
+          </div>
+          
+          {nextReward && (
+            <div className="mt-4 p-3 bg-white rounded-lg border">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Next Reward:</span>
+                <span className="text-sm text-gray-500">{nextReward.xpRequired - totalXP} XP to go</span>
+              </div>
+              <div className="text-sm text-gray-700 mb-2">{nextReward.name}</div>
+              <Progress value={(totalXP / nextReward.xpRequired) * 100} />
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Overview Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -137,6 +197,11 @@ export const ProgressReport = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Historical View Modal */}
+      {showHistorical && (
+        <HistoricalView onClose={() => setShowHistorical(false)} />
+      )}
     </div>
   );
 };
