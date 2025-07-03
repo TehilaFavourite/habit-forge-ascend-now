@@ -10,7 +10,8 @@ import { AchievementsDisplay } from '@/components/AchievementsDisplay';
 import { DayMastery } from '@/components/DayMastery';
 import { ProgressReport } from '@/components/ProgressReport';
 import { Settings } from '@/components/Settings';
-import { Calendar, Clock, CheckSquare, Zap, Trophy, Target, Crown, BarChart3, Cog } from 'lucide-react';
+import { VisionBoard } from '@/components/VisionBoard';
+import { Calendar, Clock, CheckSquare, Zap, Trophy, Target, Crown, BarChart3, Cog, Sparkles } from 'lucide-react';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('habits');
@@ -23,6 +24,7 @@ export const Dashboard = () => {
     { id: 'rewards', label: 'Rewards', icon: Trophy, component: RewardsManager },
     { id: 'achievements', label: 'Achievements', icon: Target, component: AchievementsDisplay },
     { id: 'mastery', label: 'Day Mastery', icon: Crown, component: DayMastery },
+    { id: 'vision', label: 'Vision Board', icon: Sparkles, component: VisionBoard },
     { id: 'progress', label: 'Progress', icon: BarChart3, component: ProgressReport },
     { id: 'settings', label: 'Settings', icon: Cog, component: Settings },
   ];
