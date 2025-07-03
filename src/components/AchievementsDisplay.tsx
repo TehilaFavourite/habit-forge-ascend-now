@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useAchievementsStore } from '@/stores/achievementsStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +9,13 @@ import { Trophy, Target, BookOpen, Code, Shield, Users, Zap, Star } from 'lucide
 
 export const AchievementsDisplay = () => {
   const { user } = useAuthStore();
-  const { achievements, getUserAchievements } = useAchievementsStore();
+  const { achievements, getUserAchievements, initializeDefaultAchievements } = useAchievementsStore();
+
+  useEffect(() => {
+    if (user?.id) {
+      initializeDefaultAchievements(user.id);
+    }
+  }, [user?.id, initializeDefaultAchievements]);
 
   const userAchievements = getUserAchievements(user?.id || '');
   
@@ -111,6 +118,17 @@ export const AchievementsDisplay = () => {
     );
   };
 
+  if (!achievements.length) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Trophy className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500">Loading achievements...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -134,7 +152,7 @@ export const AchievementsDisplay = () => {
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-purple-600">
-              {Math.round((userAchievements.filter(ua => ua.unlocked).length / achievements.length) * 100)}%
+              {achievements.length > 0 ? Math.round((userAchievements.filter(ua => ua.unlocked).length / achievements.length) * 100) : 0}%
             </div>
             <div className="text-sm text-gray-500">Complete</div>
           </div>
@@ -144,6 +162,8 @@ export const AchievementsDisplay = () => {
       {categories.map(category => {
         const categoryAchievements = achievements.filter(a => a.category === category.id);
         const Icon = category.icon;
+        
+        if (categoryAchievements.length === 0) return null;
         
         return (
           <div key={category.id} className="space-y-4">
