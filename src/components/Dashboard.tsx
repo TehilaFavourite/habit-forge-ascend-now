@@ -4,9 +4,13 @@ import { Header } from '@/components/Header';
 import { HabitTracker } from '@/components/HabitTracker';
 import { PomodoroTimer } from '@/components/PomodoroTimer';
 import { TodoList } from '@/components/TodoList';
+import { XPActivities } from '@/components/XPActivities';
+import { RewardsManager } from '@/components/RewardsManager';
+import { AchievementsDisplay } from '@/components/AchievementsDisplay';
+import { DayMastery } from '@/components/DayMastery';
 import { ProgressReport } from '@/components/ProgressReport';
 import { Settings } from '@/components/Settings';
-import { Calendar, Clock, CheckSquare, BarChart3, Cog } from 'lucide-react';
+import { Calendar, Clock, CheckSquare, Zap, Trophy, Target, Crown, BarChart3, Cog } from 'lucide-react';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('habits');
@@ -15,6 +19,10 @@ export const Dashboard = () => {
     { id: 'habits', label: 'Habits', icon: Calendar, component: HabitTracker },
     { id: 'pomodoro', label: 'Focus', icon: Clock, component: PomodoroTimer },
     { id: 'todos', label: 'Tasks', icon: CheckSquare, component: TodoList },
+    { id: 'xp', label: 'XP Activities', icon: Zap, component: XPActivities },
+    { id: 'rewards', label: 'Rewards', icon: Trophy, component: RewardsManager },
+    { id: 'achievements', label: 'Achievements', icon: Target, component: AchievementsDisplay },
+    { id: 'mastery', label: 'Day Mastery', icon: Crown, component: DayMastery },
     { id: 'progress', label: 'Progress', icon: BarChart3, component: ProgressReport },
     { id: 'settings', label: 'Settings', icon: Cog, component: Settings },
   ];

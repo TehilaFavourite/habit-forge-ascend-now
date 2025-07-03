@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -26,6 +25,7 @@ interface HabitState {
   uncompleteHabit: (id: string, date: string) => void;
   getUserHabits: (userId: string) => Habit[];
   calculateStreaks: (habit: Habit) => { current: number; best: number };
+  updateAchievementProgress: (userId: string, habitId: string, streak: number) => void;
 }
 
 export const useHabitStore = create<HabitState>()(
@@ -69,6 +69,10 @@ export const useHabitStore = create<HabitState>()(
               const updatedCompletions = { ...habit.completions, [date]: true };
               const updatedHabit = { ...habit, completions: updatedCompletions };
               const streaks = get().calculateStreaks(updatedHabit);
+              
+              // Update achievement progress
+              get().updateAchievementProgress(habit.userId, habit.id, streaks.current);
+              
               return {
                 ...updatedHabit,
                 currentStreak: streaks.current,
@@ -104,6 +108,28 @@ export const useHabitStore = create<HabitState>()(
       
       getUserHabits: (userId) => {
         return get().habits.filter(habit => habit.userId === userId);
+      },
+      
+      updateAchievementProgress: (userId, habitId, streak) => {
+        // This will be called by the achievements store
+        const { updateAchievementProgress } = require('@/stores/achievementsStore').useAchievementsStore.getState();
+        
+        // Update streak-based achievements
+        const streakAchievements = [
+          { id: 'fire-starter', requirement: 7 },
+          { id: 'rising-star', requirement: 30 },
+          { id: 'lightning', requirement: 90 },
+          { id: 'unstoppable', requirement: 180 },
+          { id: 'legend', requirement: 365 },
+        ];
+        
+        streakAchievements.forEach(achievement => {
+          if (streak >= achievement.requirement) {
+            updateAchievementProgress(userId, achievement.id, achievement.requirement, achievement.requirement);
+          } else {
+            updateAchievementProgress(userId, achievement.id, streak, achievement.requirement);
+          }
+        });
       },
       
       calculateStreaks: (habit) => {
