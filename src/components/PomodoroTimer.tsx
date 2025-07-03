@@ -13,11 +13,46 @@ type TimerMode = 'work' | 'shortBreak' | 'longBreak';
 
 const AMBIENT_SOUNDS = [
   { name: 'None', value: 'none' },
-  { name: 'Rain', value: 'rain' },
-  { name: 'Forest', value: 'forest' },
-  { name: 'Ocean', value: 'ocean' },
-  { name: 'Coffee Shop', value: 'coffee' },
-  { name: 'White Noise', value: 'whitenoise' },
+  { name: 'Rain', value: 'rain', url: 'https://www.soundjay.com/misc/sounds/rain-01.wav' },
+  { name: 'Forest', value: 'forest', url: 'https://www.soundjay.com/nature/sounds/forest-01.wav' },
+  { name: 'Ocean', value: 'ocean', url: 'https://www.soundjay.com/nature/sounds/ocean-01.wav' },
+  { name: 'Coffee Shop', value: 'coffee', url: 'https://www.soundjay.com/misc/sounds/coffeeshop-01.wav' },
+  { name: 'White Noise', value: 'whitenoise', url: 'https://www.soundjay.com/misc/sounds/whitenoise-01.wav' },
+  { name: 'Fireplace', value: 'fireplace', url: 'https://www.soundjay.com/misc/sounds/fire-01.wav' },
+  { name: 'Birds', value: 'birds', url: 'https://www.soundjay.com/nature/sounds/birds-01.wav' },
+];
+
+const SOUND_PRESETS = [
+  {
+    name: 'Deep Focus',
+    sounds: ['whitenoise', 'rain'],
+    description: 'White noise with gentle rain for deep concentration'
+  },
+  {
+    name: 'Nature',
+    sounds: ['forest', 'birds'],
+    description: 'Forest ambiance with bird sounds'
+  },
+  {
+    name: 'Productivity',
+    sounds: ['coffee', 'whitenoise'],
+    description: 'Coffee shop atmosphere with white noise'
+  },
+  {
+    name: 'Relax',
+    sounds: ['ocean', 'rain'],
+    description: 'Ocean waves with gentle rain'
+  },
+  {
+    name: 'Coding Zone',
+    sounds: ['whitenoise', 'fireplace'],
+    description: 'White noise with crackling fireplace'
+  },
+  {
+    name: 'Stormy Night',
+    sounds: ['rain', 'fireplace'],
+    description: 'Rain and fireplace for cozy focus'
+  }
 ];
 
 export const PomodoroTimer = () => {
@@ -32,11 +67,44 @@ export const PomodoroTimer = () => {
   const [shortBreakDuration, setShortBreakDuration] = useState(5);
   const [longBreakDuration, setLongBreakDuration] = useState(15);
   const [sessionsUntilLongBreak, setSessionsUntilLongBreak] = useState(4);
-  const [selectedSound, setSelectedSound] = useState('none');
+  const [selectedSounds, setSelectedSounds] = useState<string[]>([]);
   const [soundVolume, setSoundVolume] = useState([50]);
+  const [tickingEnabled, setTickingEnabled] = useState(true);
+  const [selectedPreset, setSelectedPreset] = useState('none');
   
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioBuffersRef = useRef<Map<string, AudioBuffer>>(new Map());
+  const audioSourcesRef = useRef<Map<string, AudioBufferSourceNode>>(new Map());
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const tickAudioRef = useRef<AudioContext | null>(null);
+
+  // Initialize audio context
+  useEffect(() => {
+    const initAudioContext = async () => {
+      try {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        gainNodeRef.current = audioContextRef.current.createGain();
+        gainNodeRef.current.connect(audioContextRef.current.destination);
+        
+        // Create tick audio context
+        tickAudioRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      } catch (error) {
+        console.warn('Web Audio API not supported, falling back to HTML audio');
+      }
+    };
+
+    initAudioContext();
+
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (tickAudioRef.current) {
+        tickAudioRef.current.close();
+      }
+    };
+  }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -55,9 +123,125 @@ export const PomodoroTimer = () => {
     }
   };
 
+  // Create tick sound using Web Audio API
+  const playTickSound = () => {
+    if (!tickingEnabled || !tickAudioRef.current) return;
+    
+    try {
+      const oscillator = tickAudioRef.current.createOscillator();
+      const gainNode = tickAudioRef.current.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(tickAudioRef.current.destination);
+      
+      oscillator.frequency.setValueAtTime(800, tickAudioRef.current.currentTime);
+      gainNode.gain.setValueAtTime(0.1, tickAudioRef.current.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, tickAudioRef.current.currentTime + 0.1);
+      
+      oscillator.start(tickAudioRef.current.currentTime);
+      oscillator.stop(tickAudioRef.current.currentTime + 0.1);
+    } catch (error) {
+      console.warn('Could not play tick sound:', error);
+    }
+  };
+
+  // Generate sound using Web Audio API (fallback for missing sound files)
+  const generateSound = (type: string): AudioBuffer | null => {
+    if (!audioContextRef.current) return null;
+
+    const sampleRate = audioContextRef.current.sampleRate;
+    const duration = 2; // 2 seconds loop
+    const buffer = audioContextRef.current.createBuffer(2, sampleRate * duration, sampleRate);
+
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      
+      for (let i = 0; i < channelData.length; i++) {
+        const t = i / sampleRate;
+        
+        switch (type) {
+          case 'rain':
+            channelData[i] = (Math.random() - 0.5) * 0.3 * Math.sin(t * 20);
+            break;
+          case 'ocean':
+            channelData[i] = Math.sin(t * 0.5) * 0.3 + (Math.random() - 0.5) * 0.1;
+            break;
+          case 'whitenoise':
+            channelData[i] = (Math.random() - 0.5) * 0.2;
+            break;
+          case 'forest':
+            channelData[i] = (Math.random() - 0.5) * 0.1 + Math.sin(t * Math.random() * 10) * 0.1;
+            break;
+          case 'fireplace':
+            channelData[i] = (Math.random() - 0.5) * 0.4 * (1 + Math.sin(t * 3));
+            break;
+          case 'birds':
+            channelData[i] = Math.sin(t * (800 + Math.random() * 400)) * 0.1 * (Math.random() > 0.95 ? 1 : 0);
+            break;
+          case 'coffee':
+            channelData[i] = (Math.random() - 0.5) * 0.15 + Math.sin(t * 60) * 0.05;
+            break;
+          default:
+            channelData[i] = 0;
+        }
+      }
+    }
+
+    return buffer;
+  };
+
+  const playAmbientSounds = async () => {
+    if (!audioContextRef.current || !gainNodeRef.current || selectedSounds.length === 0) return;
+
+    try {
+      // Resume audio context if suspended
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+
+      // Set volume
+      gainNodeRef.current.gain.setValueAtTime(soundVolume[0] / 100, audioContextRef.current.currentTime);
+
+      selectedSounds.forEach(soundType => {
+        if (soundType === 'none') return;
+
+        // Generate sound buffer if not exists
+        if (!audioBuffersRef.current.has(soundType)) {
+          const buffer = generateSound(soundType);
+          if (buffer) {
+            audioBuffersRef.current.set(soundType, buffer);
+          }
+        }
+
+        const buffer = audioBuffersRef.current.get(soundType);
+        if (buffer) {
+          const source = audioContextRef.current!.createBufferSource();
+          source.buffer = buffer;
+          source.loop = true;
+          source.connect(gainNodeRef.current!);
+          source.start();
+          audioSourcesRef.current.set(soundType, source);
+        }
+      });
+    } catch (error) {
+      console.warn('Could not play ambient sounds:', error);
+    }
+  };
+
+  const stopAmbientSounds = () => {
+    audioSourcesRef.current.forEach(source => {
+      try {
+        source.stop();
+      } catch (error) {
+        // Source might already be stopped
+      }
+    });
+    audioSourcesRef.current.clear();
+  };
+
   const startTimer = () => {
     setIsRunning(true);
-    playAmbientSound();
+    playAmbientSounds();
     
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -65,6 +249,8 @@ export const PomodoroTimer = () => {
           handleTimerComplete();
           return 0;
         }
+        // Play tick sound every second
+        playTickSound();
         return prev - 1;
       });
     }, 1000);
@@ -75,7 +261,7 @@ export const PomodoroTimer = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    stopAmbientSound();
+    stopAmbientSounds();
   };
 
   const resetTimer = () => {
@@ -84,7 +270,7 @@ export const PomodoroTimer = () => {
       clearInterval(intervalRef.current);
     }
     setTimeLeft(getDurationForMode(mode));
-    stopAmbientSound();
+    stopAmbientSounds();
   };
 
   const handleTimerComplete = () => {
@@ -92,7 +278,7 @@ export const PomodoroTimer = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    stopAmbientSound();
+    stopAmbientSounds();
 
     if (mode === 'work') {
       setCompletedSessions(prev => prev + 1);
@@ -108,18 +294,29 @@ export const PomodoroTimer = () => {
     }
   };
 
-  const playAmbientSound = () => {
-    if (selectedSound !== 'none' && audioRef.current) {
-      audioRef.current.volume = soundVolume[0] / 100;
-      audioRef.current.play().catch(console.error);
+  const handlePresetSelect = (presetName: string) => {
+    if (presetName === 'none') {
+      setSelectedSounds([]);
+      setSelectedPreset('none');
+      return;
+    }
+
+    const preset = SOUND_PRESETS.find(p => p.name === presetName);
+    if (preset) {
+      setSelectedSounds(preset.sounds);
+      setSelectedPreset(presetName);
     }
   };
 
-  const stopAmbientSound = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
+  const toggleSound = (soundValue: string) => {
+    setSelectedSounds(prev => {
+      if (prev.includes(soundValue)) {
+        return prev.filter(s => s !== soundValue);
+      } else {
+        return [...prev, soundValue];
+      }
+    });
+    setSelectedPreset('none'); // Clear preset when manually selecting sounds
   };
 
   useEffect(() => {
@@ -127,7 +324,7 @@ export const PomodoroTimer = () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      stopAmbientSound();
+      stopAmbientSounds();
     };
   }, []);
 
@@ -136,6 +333,13 @@ export const PomodoroTimer = () => {
       setTimeLeft(getDurationForMode(mode));
     }
   }, [mode, workDuration, shortBreakDuration, longBreakDuration, isRunning]);
+
+  // Update volume when slider changes
+  useEffect(() => {
+    if (gainNodeRef.current && audioContextRef.current) {
+      gainNodeRef.current.gain.setValueAtTime(soundVolume[0] / 100, audioContextRef.current.currentTime);
+    }
+  }, [soundVolume]);
 
   const progress = ((getDurationForMode(mode) - timeLeft) / getDurationForMode(mode)) * 100;
 
@@ -273,36 +477,77 @@ export const PomodoroTimer = () => {
                   disabled={isRunning}
                 />
               </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="ticking"
+                  checked={tickingEnabled}
+                  onChange={(e) => setTickingEnabled(e.target.checked)}
+                  className="rounded"
+                />
+                <Label htmlFor="ticking">Enable ticking sound</Label>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Ambient Sounds Card */}
+          {/* Sound Presets Card */}
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Volume2 className="h-5 w-5" />
-                Focus Ambience
+                Sound Presets
               </CardTitle>
-              <CardDescription>Choose background sounds for focus</CardDescription>
+              <CardDescription>Quick ambient sound combinations</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Sound</Label>
-                <Select value={selectedSound} onValueChange={setSelectedSound}>
+                <Label>Preset</Label>
+                <Select value={selectedPreset} onValueChange={handlePresetSelect}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Choose a preset" />
                   </SelectTrigger>
                   <SelectContent>
-                    {AMBIENT_SOUNDS.map((sound) => (
-                      <SelectItem key={sound.value} value={sound.value}>
-                        {sound.name}
+                    <SelectItem value="none">Custom</SelectItem>
+                    {SOUND_PRESETS.map((preset) => (
+                      <SelectItem key={preset.name} value={preset.name}>
+                        {preset.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               
-              {selectedSound !== 'none' && (
+              {selectedPreset !== 'none' && (
+                <p className="text-sm text-gray-600">
+                  {SOUND_PRESETS.find(p => p.name === selectedPreset)?.description}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Individual Sounds Card */}
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle>Individual Sounds</CardTitle>
+              <CardDescription>Mix and match your own combination</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-2">
+                {AMBIENT_SOUNDS.filter(sound => sound.value !== 'none').map((sound) => (
+                  <Button
+                    key={sound.value}
+                    variant={selectedSounds.includes(sound.value) ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => toggleSound(sound.value)}
+                    className={selectedSounds.includes(sound.value) ? 'bg-gradient-to-r from-purple-500 to-blue-500' : ''}
+                  >
+                    {sound.name}
+                  </Button>
+                ))}
+              </div>
+              
+              {selectedSounds.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Volume</Label>
@@ -334,17 +579,6 @@ export const PomodoroTimer = () => {
           </Card>
         </div>
       </div>
-
-      {/* Hidden Audio Element for Ambient Sounds */}
-      {selectedSound !== 'none' && (
-        <audio
-          ref={audioRef}
-          loop
-          preload="none"
-        >
-          <source src={`/sounds/${selectedSound}.mp3`} type="audio/mpeg" />
-        </audio>
-      )}
     </div>
   );
 };
