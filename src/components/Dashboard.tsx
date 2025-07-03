@@ -11,7 +11,8 @@ import { DayMastery } from '@/components/DayMastery';
 import { ProgressReport } from '@/components/ProgressReport';
 import { Settings } from '@/components/Settings';
 import { VisionBoard } from '@/components/VisionBoard';
-import { Calendar, Clock, CheckSquare, Zap, Trophy, Target, Crown, BarChart3, Cog, Sparkles } from 'lucide-react';
+import { Journal } from '@/components/Journal';
+import { Calendar, Clock, CheckSquare, Zap, Trophy, Target, Crown, BarChart3, Cog, Sparkles, BookOpen } from 'lucide-react';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('habits');
@@ -25,6 +26,7 @@ export const Dashboard = () => {
     { id: 'achievements', label: 'Achievements', icon: Target, component: AchievementsDisplay },
     { id: 'mastery', label: 'Day Mastery', icon: Crown, component: DayMastery },
     { id: 'vision', label: 'Vision Board', icon: Sparkles, component: VisionBoard },
+    { id: 'journal', label: 'Journal', icon: BookOpen, component: Journal },
     { id: 'progress', label: 'Progress', icon: BarChart3, component: ProgressReport },
     { id: 'settings', label: 'Settings', icon: Cog, component: Settings },
   ];
