@@ -5,6 +5,7 @@ interface User {
   id: string;
   username: string;
   email: string;
+  password: string; // <-- Add this line
   level: number;
   xp: number;
   totalXp: number;
@@ -75,8 +76,12 @@ export const useAuthStore = create<AuthState>()(
           joinedAt: new Date().toISOString(),
         };
 
-        users.push({ username, email, password });
+        users.push(newUser);
         localStorage.setItem("habit_app_users", JSON.stringify(users));
+        set({
+          user: { ...newUser, password: undefined },
+          isAuthenticated: true,
+        }); // <-- set user and authenticated
         return { success: true };
       },
 

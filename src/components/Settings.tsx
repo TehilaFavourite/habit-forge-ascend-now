@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { useHabitStore } from "@/stores/habitStore";
 import { useTodoStore } from "@/stores/todoStore";
@@ -37,6 +38,7 @@ import { toast } from "sonner";
 
 export const Settings = () => {
   const { user, updateUser, logout } = useAuthStore();
+  const navigate = useNavigate();
   const habitStore = useHabitStore();
   const todoStore = useTodoStore();
 
@@ -96,6 +98,10 @@ export const Settings = () => {
     // Force reload to reset state
     window.location.reload();
   };
+  const handleSignOut = () => {
+    logout();
+    navigate("/"); // Redirect to home/login
+  };
 
   return (
     <div className='space-y-6'>
@@ -138,7 +144,7 @@ export const Settings = () => {
             </div>
 
             <Button
-              onClick={logout}
+              onClick={handleSignOut} // <-- update here
               variant='outline'
               className='w-full text-red-600 border-red-200 hover:bg-red-50'
             >

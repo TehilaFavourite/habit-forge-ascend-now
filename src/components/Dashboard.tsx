@@ -12,6 +12,10 @@ import { Settings } from "@/components/Settings";
 import { VisionBoard } from "@/components/VisionBoard";
 import { Journal } from "@/components/Journal";
 import { AchievementTracker } from "@/components/AchievementTracker";
+import { useAuthStore } from "@/stores/authStore";
+import { useNavigate } from "react-router-dom";
+
+
 
 import {
   Calendar,

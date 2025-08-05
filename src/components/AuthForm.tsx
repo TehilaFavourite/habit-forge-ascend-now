@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+
 import {
   Card,
   CardContent,
@@ -51,6 +53,7 @@ export const AuthForm = () => {
     }
   };
 
+  const navigate = useNavigate();
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -69,6 +72,7 @@ export const AuthForm = () => {
       );
       if (result.success) {
         toast.success("Account created! Welcome to your habit journey!");
+        navigate("/dashboard"); // <-- redirect to dashboard
       } else if (result.error === "username") {
         toast.error("Username already exists. Please choose another.");
       } else if (result.error === "email") {
@@ -91,8 +95,7 @@ export const AuthForm = () => {
     try {
       const users = JSON.parse(localStorage.getItem("habit_app_users") || "[]");
       const userIndex = users.findIndex(
-        (u: any) =>
-          u.username === resetUsername && u.email === resetEmail
+        (u: any) => u.username === resetUsername && u.email === resetEmail
       );
       if (userIndex === -1) {
         toast.error("No account found with that username and email.");
@@ -219,32 +222,32 @@ export const AuthForm = () => {
               </form>
               {/* Reset Password Form */}
               {showReset && (
-                <div className="my-4 p-4 bg-white rounded shadow">
-                  <h2 className="text-lg font-bold mb-2">Reset Password</h2>
-                  <form onSubmit={handleResetPassword} className="space-y-2">
+                <div className='my-4 p-4 bg-white rounded shadow'>
+                  <h2 className='text-lg font-bold mb-2'>Reset Password</h2>
+                  <form onSubmit={handleResetPassword} className='space-y-2'>
                     <Input
-                      type="text"
-                      placeholder="Username"
+                      type='text'
+                      placeholder='Username'
                       value={resetUsername}
                       onChange={(e) => setResetUsername(e.target.value)}
                       required
                     />
                     <Input
-                      type="email"
-                      placeholder="Email"
+                      type='email'
+                      placeholder='Email'
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       required
                     />
                     <Input
-                      type="password"
-                      placeholder="New Password"
+                      type='password'
+                      placeholder='New Password'
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
                     />
-                    <div className="flex gap-2">
-                      <Button type="submit" disabled={resetLoading}>
+                    <div className='flex gap-2'>
+                      <Button type='submit' disabled={resetLoading}>
                         {resetLoading ? (
                           <>
                             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -254,7 +257,11 @@ export const AuthForm = () => {
                           <>Reset Password</>
                         )}
                       </Button>
-                      <Button type="button" variant="outline" onClick={() => setShowReset(false)}>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        onClick={() => setShowReset(false)}
+                      >
                         Cancel
                       </Button>
                     </div>
