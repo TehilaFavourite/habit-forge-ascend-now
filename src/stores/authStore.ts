@@ -1,6 +1,5 @@
-
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
@@ -16,7 +15,11 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   login: (username: string, password: string) => Promise<boolean>;
-  register: (username: string, email: string, password: string) => Promise<boolean>;
+  register: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>; // <-- update here
   logout: () => void;
   checkAuth: () => void;
   updateUser: (updates: Partial<User>) => void;
@@ -27,35 +30,40 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       isAuthenticated: false,
-      
+
       login: async (username: string, password: string) => {
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Check if user exists in localStorage
-        const users = JSON.parse(localStorage.getItem('habit_app_users') || '[]');
+        const users = JSON.parse(
+          localStorage.getItem("habit_app_users") || "[]"
+        );
         const existingUser = users.find((u: any) => u.username === username);
-        
+
         if (existingUser && existingUser.password === password) {
           const { password: _, ...userWithoutPassword } = existingUser;
           set({ user: userWithoutPassword, isAuthenticated: true });
           return true;
         }
-        
+
         return false;
       },
-      
+
       register: async (username: string, email: string, password: string) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const users = JSON.parse(localStorage.getItem('habit_app_users') || '[]');
-        
-        // Check if username already exists
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const users = JSON.parse(
+          localStorage.getItem("habit_app_users") || "[]"
+        );
+
+        // Check if username or email already exists
         if (users.some((u: any) => u.username === username)) {
-          return false;
+          return { success: false, error: "username" };
         }
-        
+        if (users.some((u: any) => u.email === email)) {
+          return { success: false, error: "email" };
+        }
+
         const newUser = {
           id: Date.now().toString(),
           username,
@@ -66,45 +74,49 @@ export const useAuthStore = create<AuthState>()(
           totalXp: 0,
           joinedAt: new Date().toISOString(),
         };
-        
-        users.push(newUser);
-        localStorage.setItem('habit_app_users', JSON.stringify(users));
-        
-        const { password: _, ...userWithoutPassword } = newUser;
-        set({ user: userWithoutPassword, isAuthenticated: true });
-        return true;
+
+        users.push({ username, email, password });
+        localStorage.setItem("habit_app_users", JSON.stringify(users));
+        return { success: true };
       },
-      
+
       logout: () => {
         set({ user: null, isAuthenticated: false });
       },
-      
+
       checkAuth: () => {
         const state = get();
         if (state.user) {
           set({ isAuthenticated: true });
         }
       },
-      
+
       updateUser: (updates: Partial<User>) => {
         const state = get();
         if (state.user) {
           const updatedUser = { ...state.user, ...updates };
           set({ user: updatedUser });
-          
+
           // Update in localStorage
-          const users = JSON.parse(localStorage.getItem('habit_app_users') || '[]');
-          const userIndex = users.findIndex((u: any) => u.id === state.user?.id);
-          if (userIndex !== -1) {    
+          const users = JSON.parse(
+            localStorage.getItem("habit_app_users") || "[]"
+          );
+          const userIndex = users.findIndex(
+            (u: any) => u.id === state.user?.id
+          );
+          if (userIndex !== -1) {
             users[userIndex] = { ...users[userIndex], ...updates };
-            localStorage.setItem('habit_app_users', JSON.stringify(users));
+            localStorage.setItem("habit_app_users", JSON.stringify(users));
           }
         }
       },
     }),
     {
-      name: 'habit-auth-storage',
-      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+      name: "habit-auth-storage",
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );
