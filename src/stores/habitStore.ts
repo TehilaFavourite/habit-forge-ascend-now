@@ -15,6 +15,7 @@ export interface Habit {
   completions: Record<string, boolean>; // date string -> completed
   createdAt: string;
   isCore: boolean; // for day mastery tracking
+  description?: string;
 }
 
 interface HabitState {
