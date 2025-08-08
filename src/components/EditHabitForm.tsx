@@ -37,6 +37,12 @@ const HABIT_ICONS = [
   "🎯",
   "✍️",
   "🎵",
+  "💻",
+  "🌅",
+  "🌙",
+  "🛡️",
+  "🎯",
+  "🛠️",
 ];
 const HABIT_COLORS = [
   "#6366f1",
@@ -47,6 +53,7 @@ const HABIT_COLORS = [
   "#06b6d4",
   "#ef4444",
   "#84cc16",
+  "#f97316",
 ];
 
 export const EditHabitForm = ({ habit, onClose }: EditHabitFormProps) => {
