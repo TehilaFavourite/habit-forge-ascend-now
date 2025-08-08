@@ -60,6 +60,7 @@ export const EditHabitForm = ({ habit, onClose }: EditHabitFormProps) => {
     frequency: habit.frequency as "daily" | "weekly" | "custom",
     goal: habit.goal,
     isCore: habit.isCore,
+    description: habit.description || "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -199,6 +200,23 @@ export const EditHabitForm = ({ habit, onClose }: EditHabitFormProps) => {
               onCheckedChange={(checked) =>
                 setFormData((prev) => ({ ...prev, isCore: checked }))
               }
+            />
+          </div>
+
+          {/* Habit Description */}
+          <div className='space-y-2'>
+            <Label htmlFor='habit-description'>Description</Label>
+            <Input
+              id='habit-description'
+              placeholder='Describe your habit (optional)'
+              value={formData.description}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
+              className='transition-all focus:ring-purple-500'
             />
           </div>
 

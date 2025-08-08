@@ -116,6 +116,17 @@ export const HabitCard = ({
           </DropdownMenu>
         </div>
 
+        {/* Example inside your habit card/component */}
+        <div className='habit-card'>
+          <div className='habit-title'>{habit.name}</div>
+          <div className='habit-icon'>{habit.icon}</div>
+          {habit.description && (
+            <div className='habit-description text-gray-600 text-sm mt-1'>
+              {habit.description}
+            </div>
+          )}
+        </div>
+
         {/* Streak Info */}
         <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center gap-4'>
@@ -134,7 +145,6 @@ export const HabitCard = ({
             </div>
           </div>
         </div>
-
         {/* Complete Button */}
         <Button
           onClick={handleToggleComplete}
