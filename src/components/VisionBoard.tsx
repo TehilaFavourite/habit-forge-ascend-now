@@ -19,29 +19,29 @@ interface VisionItem {
 const defaultVisionItems: VisionItem[] = [
   {
     id: '1',
-    title: 'World-Class Rust Security Researcher',
-    description: 'I am a world-class Rust security researcher who approaches every challenge with systematic thinking and relentless curiosity. My daily habits include deep technical study, rigorous code analysis, and continuous learning.',
+    title: '',
+    description: '',
     category: 'identity',
     color: 'from-purple-500 to-indigo-600'
   },
   {
     id: '2',
-    title: 'Character Over Goals',
-    description: 'The person you become in pursuit of your goals is more valuable than the goals themselves. Your character is forged in the daily choice between comfort and growth.',
+    title: '',
+    description: '',
     category: 'quote',
     color: 'from-emerald-500 to-teal-600'
   },
   {
     id: '3',
-    title: 'Daily Transformation',
-    description: 'I am becoming the person I admire. Every day, through consistent action and disciplined practice, I am building the character, skills, and mindset that define excellence.',
+    title: '',
+    description: '',
     category: 'identity',
     color: 'from-rose-500 to-pink-600'
   },
   {
     id: '4',
-    title: 'Security Expert Mastery',
-    description: 'Master advanced cryptographic implementations, discover and responsibly disclose 10 critical vulnerabilities, and become a recognized authority in Rust security.',
+    title: '',
+    description: '',
     category: 'goal',
     color: 'from-orange-500 to-red-600'
   }
