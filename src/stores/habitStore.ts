@@ -37,6 +37,12 @@ interface HabitState {
     habitId: string,
     streak: number
   ) => void;
+  generateHabits: (habits: Array<{
+    title: string;
+    description: string;
+    streak: number;
+    reminders: any[];
+  }>) => void;
 }
 
 export const useHabitStore = create<HabitState>()(
@@ -163,6 +169,31 @@ export const useHabitStore = create<HabitState>()(
             );
           }
         });
+      },
+
+      generateHabits: (habits) => {
+        // Get current user ID from auth store
+        const currentUserId = "default-user"; // Fallback for now
+        
+        const newHabits = habits.map((habit, index) => ({
+          id: (Date.now() + index).toString(),
+          name: habit.title,
+          icon: "🎯",
+          color: "#8B5CF6",
+          userId: currentUserId,
+          frequency: "daily" as const,
+          goal: 1,
+          currentStreak: habit.streak || 0,
+          bestStreak: habit.streak || 0,
+          completions: {},
+          createdAt: new Date().toISOString(),
+          isCore: true,
+          description: habit.description,
+        }));
+
+        set((state) => ({
+          habits: [...state.habits, ...newHabits],
+        }));
       },
 
       calculateStreaks: (habit) => {

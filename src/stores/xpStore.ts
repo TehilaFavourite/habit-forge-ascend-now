@@ -34,6 +34,7 @@ interface XPState {
   getTotalXPForDate: (date: string, userId: string) => number;
   getTotalXPForUser: (userId: string) => number;
   getStreakForActivity: (activityId: string) => number;
+  generateActivities: (activities: Array<{name: string, xp: number, type: 'core' | 'bonus', category: string}>) => void;
 }
 
 export const useXPStore = create<XPState>()(
@@ -132,6 +133,20 @@ export const useXPStore = create<XPState>()(
         }
         
         return streak;
+      },
+      
+      generateActivities: (activities) => {
+        const userId = "default-user"; // Use default user for now
+        const newActivities = activities.map(activity => ({
+          ...activity,
+          id: `xp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          userId,
+          createdAt: new Date().toISOString(),
+        }));
+        
+        set(state => ({
+          activities: [...state.activities, ...newActivities]
+        }));
       },
     }),
     {

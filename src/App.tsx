@@ -18,7 +18,7 @@ import { Settings } from "./components/Settings";
 import { VisionBoard } from "./components/VisionBoard";
 import { Journal } from "./components/Journal";
 import { AchievementTracker } from "./components/AchievementTracker";
-import { OnboardingWizard } from "./components/OnboardingWizard";
+import OnboardingWizard from "./components/OnboardingWizard";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();

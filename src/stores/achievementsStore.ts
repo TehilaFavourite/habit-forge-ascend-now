@@ -56,6 +56,7 @@ interface AchievementsState {
   
   // Initialization
   initializeUserData: (userId: string) => void;
+  initialize: () => void;
 }
 
 export const useAchievementsStore = create<AchievementsState>()(
@@ -249,6 +250,12 @@ export const useAchievementsStore = create<AchievementsState>()(
             },
           }));
         }
+      },
+
+      initialize: () => {
+        // Initialize with default user for now
+        const defaultUserId = "default-user";
+        get().initializeUserData(defaultUserId);
       },
     }),
     {

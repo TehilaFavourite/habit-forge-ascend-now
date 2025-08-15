@@ -1,311 +1,363 @@
 import { useState, useEffect } from "react";
-import { useAuthStore } from "@/stores/authStore";
-import { useTodoStore } from "@/stores/todoStore";
+import { TaskCard } from "./TaskCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Sun, Moon, CheckSquare, Trash2 } from "lucide-react";
+import {
+  Calendar,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Repeat,
+  Sun,
+  Moon,
+  CheckSquare,
+  Trash2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
+import { useTodoStore, type Todo } from "@/stores/todoStore";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
-export const TodoList = () => {
+export function TodoList() {
   const { user } = useAuthStore();
-  const { getTodosForUser, addTodo, toggleTodo, deleteTodo, updateTodo } =
-    useTodoStore();
-  const [newTask, setNewTask] = useState("");
-  const [activeCategory, setActiveCategory] = useState<
-    "morning" | "evening" | "general"
-  >("general");
-  const [recurrence, setRecurrence] = useState<
+  const {
+    getTodosForUser,
+    addTodo,
+    toggleTodo,
+    deleteTodo,
+    resetRecurringTasks,
+  } = useTodoStore();
+
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState<
+    "low" | "medium" | "high"
+  >("medium");
+  const [newTaskTimeOfDay, setNewTaskTimeOfDay] = useState<
+    "morning" | "afternoon" | "evening"
+  >("morning");
+  const [newTaskRecurrence, setNewTaskRecurrence] = useState<
     "none" | "daily" | "weekly" | "monthly"
   >("none");
 
-  // Reset recurring tasks daily
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    const todos = getTodosForUser(user?.id || "");
-    todos.forEach((todo) => {
-      if (
-        todo.recurrence === "daily" &&
-        todo.completed &&
-        todo.lastCompletedDate !== today
-      ) {
-        updateTodo(todo.id, { completed: false });
-      }
-      // Add logic for weekly/monthly if needed
-    });
-  }, [user, getTodosForUser, updateTodo]);
+    if (user?.id) {
+      resetRecurringTasks(user.id);
+    }
+  }, [user?.id, resetRecurringTasks]);
 
-  const todos = getTodosForUser(user?.id || "");
-  const morningTodos = todos.filter((todo) => todo.category === "morning");
-  const eveningTodos = todos.filter((todo) => todo.category === "evening");
-  const generalTodos = todos.filter((todo) => todo.category === "general");
+  const tasks = getTodosForUser(user?.id || "");
+  const morningTasks = tasks.filter((task) => task.category === "morning");
+  const afternoonTasks = tasks.filter((task) => task.category === "afternoon");
+  const eveningTasks = tasks.filter((task) => task.category === "evening");
 
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTask.trim()) return;
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const overallProgress =
+    totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-    addTodo({
-      title: newTask,
-      category: activeCategory,
-      userId: user?.id || "",
-      recurrence,
-      lastCompletedDate: "",
-    });
+  const handleAddTask = () => {
+    if (newTaskTitle.trim() && user?.id) {
+      addTodo({
+        title: newTaskTitle,
+        category: newTaskTimeOfDay,
+        userId: user.id,
+        recurrence: newTaskRecurrence,
+        priority: newTaskPriority,
+        lastCompletedDate: "",
+      });
 
-    setNewTask("");
-    setRecurrence("none");
-    toast.success("Task added to your list!");
-  };
+      setNewTaskTitle("");
+      setNewTaskRecurrence("none");
+      setIsAddTaskOpen(false);
 
-  const handleToggleTodo = (
-    id: string,
-    completed: boolean,
-    recurrence?: string
-  ) => {
-    toggleTodo(id);
-    if (!completed) {
-      toast.success("Task completed! Great job! 🎉");
-      // If recurring, update lastCompletedDate
-      if (recurrence && recurrence !== "none") {
-        updateTodo(id, {
-          lastCompletedDate: new Date().toISOString().split("T")[0],
-        });
-      }
+      toast.success("Task added successfully!", {
+        style: { background: "hsl(var(--success))", color: "white" },
+      });
     }
   };
 
-  const TodoSection = ({
-    title,
-    icon: Icon,
-    todos: sectionTodos,
-    category,
-  }: {
-    title: string;
-    icon: any;
-    todos: any[];
-    category: "morning" | "evening" | "general";
-  }) => {
-    const completedCount = sectionTodos.filter((todo) => todo.completed).length;
-    const totalCount = sectionTodos.length;
+  const handleToggleTask = (taskId: string) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task && !task.completed) {
+      toast.success("Task completed! Great job! 🎉", {
+        style: { background: "hsl(var(--success))", color: "white" },
+      });
+    }
+    toggleTodo(taskId);
+  };
 
-    return (
-      <Card className='bg-white/80 backdrop-blur-sm border-0 shadow-lg'>
-        <CardHeader>
-          <CardTitle className='flex items-center justify-between'>
-            <div className='flex items-center gap-2'>
-              <Icon className='h-5 w-5' />
-              {title}
-            </div>
-            <Badge variant='secondary'>
-              {completedCount}/{totalCount}
-            </Badge>
-          </CardTitle>
-          {totalCount > 0 && (
-            <div className='w-full h-2 bg-gray-200 rounded-full overflow-hidden'>
-              <div
-                className='h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500'
-                style={{ width: `${(completedCount / totalCount) * 100}%` }}
-              />
-            </div>
-          )}
-        </CardHeader>
-        <CardContent className='space-y-3'>
-          {sectionTodos.length === 0 ? (
-            <p className='text-gray-500 text-center py-4'>
-              No tasks yet. Add some to get started!
-            </p>
-          ) : (
-            sectionTodos.map((todo) => (
-              <div
-                key={todo.id}
-                className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                  todo.completed
-                    ? "bg-green-50 border border-green-200"
-                    : "bg-gray-50 hover:bg-gray-100"
-                }`}
-              >
-                <Checkbox
-                  checked={todo.completed}
-                  onCheckedChange={() =>
-                    handleToggleTodo(todo.id, todo.completed, todo.recurrence)
-                  }
-                />
-                <span
-                  className={`flex-1 ${
-                    todo.completed
-                      ? "line-through text-gray-500"
-                      : "text-gray-800"
-                  }`}
-                >
-                  {todo.title}
-                  {todo.recurrence && todo.recurrence !== "none" && (
-                    <span className='ml-2 text-xs text-blue-500 bg-blue-50 px-2 py-1 rounded'>
-                      {todo.recurrence.charAt(0).toUpperCase() +
-                        todo.recurrence.slice(1)}
-                    </span>
-                  )}
-                </span>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => deleteTodo(todo.id)}
-                  className='text-red-500 hover:text-red-700 hover:bg-red-50'
-                >
-                  <Trash2 className='h-4 w-4' />
-                </Button>
-              </div>
-            ))
-          )}
+  const handleDeleteTask = (taskId: string) => {
+    deleteTodo(taskId);
+    toast.success("Task deleted", {
+      style: {
+        background: "hsl(var(--muted))",
+        color: "hsl(var(--foreground))",
+      },
+    });
+  };
 
-          {/* Quick Add for this category */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!newTask.trim()) return;
-              addTodo({
-                title: newTask,
-                category,
-                userId: user?.id || "",
-                // completed: false,
-                recurrence,
-                lastCompletedDate: "",
-              });
-              setNewTask("");
-              setRecurrence("none");
-              toast.success(`Task added to ${title.toLowerCase()}!`);
-            }}
-            className='flex gap-2 mt-4'
-          >
-            <Input
-              placeholder={`Add ${title.toLowerCase()} task...`}
-              value={activeCategory === category ? newTask : ""}
-              onChange={(e) => {
-                setNewTask(e.target.value);
-                setActiveCategory(category);
-              }}
-              className='flex-1'
-            />
-            <select
-              value={recurrence}
-              onChange={(e) => setRecurrence(e.target.value as any)}
-              className='border rounded px-2 py-1'
-            >
-              <option value='none'>One-time</option>
-              <option value='daily'>Daily</option>
-              <option value='weekly'>Weekly</option>
-              <option value='monthly'>Monthly</option>
-            </select>
-            <Button type='submit' size='sm'>
-              <Plus className='h-4 w-4' />
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    );
+  const openAddTaskDialog = (
+    timeOfDay?: "morning" | "afternoon" | "evening"
+  ) => {
+    if (timeOfDay) {
+      setNewTaskTimeOfDay(timeOfDay);
+    }
+    setIsAddTaskOpen(true);
   };
 
   return (
-    <div className='space-y-6'>
-      <div className='text-center'>
-        <h2 className='text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
-          Daily Tasks
-        </h2>
-        <p className='text-gray-600 mt-1'>
-          Organize your day with structured routines
-        </p>
-      </div>
+    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-white p-4 md:p-6 lg:p-8'>
+      <div className='max-w-7xl mx-auto'>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className='text-center mb-8'
+        >
+          <div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4'>
+            <Sparkles className='w-4 h-4' />
+            <span className='text-sm font-medium'>Your Daily Journey</span>
+          </div>
 
-      {/* Quick Add Task */}
-      <Card className='bg-gradient-to-r from-purple-50 to-blue-50 border-0 shadow-lg'>
-        <CardHeader>
-          <CardTitle>Add New Task</CardTitle>
-          <CardDescription>
-            Quickly add tasks to your daily routine
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleAddTodo} className='flex gap-3'>
-            <div className='flex gap-2'>
-              {[
-                { value: "morning", label: "Morning", icon: Sun },
-                { value: "general", label: "General", icon: CheckSquare },
-                { value: "evening", label: "Evening", icon: Moon },
-              ].map(({ value, label, icon: Icon }) => (
-                <Button
-                  key={value}
-                  type='button'
-                  variant={activeCategory === value ? "default" : "outline"}
-                  size='sm'
-                  onClick={() => setActiveCategory(value as any)}
-                  className={`${
-                    activeCategory === value
-                      ? "bg-gradient-to-r from-purple-500 to-blue-500"
-                      : ""
-                  }`}
-                >
-                  <Icon className='h-4 w-4 mr-1' />
-                  {label}
-                </Button>
-              ))}
+          <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4'>
+            Daily Planner
+          </h1>
+
+          <p className='text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto'>
+            Organize your day with style and efficiency. Plan, track, and
+            achieve your goals beautifully.
+          </p>
+
+          {/* Stats */}
+          <div className='flex items-center justify-center gap-6 mb-8'>
+            <div className='flex items-center gap-2'>
+              <div className='w-3 h-3 rounded-full bg-primary'></div>
+              <span className='text-sm text-muted-foreground'>
+                {completedTasks}/{totalTasks} tasks completed
+              </span>
             </div>
-            <Input
-              placeholder='What do you want to accomplish?'
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              className='flex-1'
-            />
-            <select
-              value={recurrence}
-              onChange={(e) => setRecurrence(e.target.value as any)}
-              className='border rounded px-2 py-1'
-            >
-              <option value='none'>One-time</option>
-              <option value='daily'>Daily</option>
-              <option value='weekly'>Weekly</option>
-              <option value='monthly'>Monthly</option>
-            </select>
-            <Button
-              type='submit'
-              className='bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
-            >
-              <Plus className='h-4 w-4 mr-2' />
-              Add Task
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            <div className='flex items-center gap-2'>
+              <TrendingUp className='w-4 h-4 text-success' />
+              <span className='text-sm text-muted-foreground'>
+                {Math.round(overallProgress)}% daily progress
+              </span>
+            </div>
+          </div>
+        </motion.div>
 
-      {/* Task Sections */}
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-        <TodoSection
-          title='Morning Routine'
-          icon={Sun}
-          todos={morningTodos}
-          category='morning'
-        />
+        {/* Quick Add Section */}
+        <div className='max-w-2xl mx-auto mb-8'>
+          <div className='bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-border/50 shadow-md'>
+            <div className='flex items-center gap-3 mb-4'>
+              <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center'>
+                <Target className='w-5 h-5 text-primary' />
+              </div>
+              <div>
+                <h3 className='font-semibold text-foreground'>
+                  Quick Add Task
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  Plan your day with prioritized tasks
+                </p>
+              </div>
+            </div>
 
-        <TodoSection
-          title='Daily Tasks'
-          icon={CheckSquare}
-          todos={generalTodos}
-          category='general'
-        />
+            <Dialog open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen}>
+              <DialogTrigger asChild>
+                <Button className='flex-1 w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded p-2'>
+                  <Calendar className='w-4 h-4 mr-2' />
+                  Add New Task
+                </Button>
+              </DialogTrigger>
 
-        <TodoSection
-          title='Evening Routine'
-          icon={Moon}
-          todos={eveningTodos}
-          category='evening'
-        />
+              <DialogContent className='bg-white/90 backdrop-blur-md rounded-lg p-6'>
+                <DialogHeader>
+                  <DialogTitle className='gradient-text'>
+                    Create New Task
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className='space-y-4 pt-4'>
+                  <div>
+                    <Label htmlFor='task-title'>Task Title</Label>
+                    <Input
+                      id='task-title'
+                      placeholder='What do you want to accomplish?'
+                      value={newTaskTitle}
+                      onChange={(e) => setNewTaskTitle(e.target.value)}
+                      className='mt-1'
+                    />
+                  </div>
+
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor='time-of-day'>Time of Day</Label>
+                      <Select
+                        value={newTaskTimeOfDay}
+                        onValueChange={(
+                          value: "morning" | "afternoon" | "evening"
+                        ) => setNewTaskTimeOfDay(value)}
+                      >
+                        <SelectTrigger className='mt-1'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='morning'>☀️ Morning</SelectItem>
+                          <SelectItem value='afternoon'>
+                            ☀️ Afternoon
+                          </SelectItem>
+                          <SelectItem value='evening'>🌙 Evening</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor='priority'>Priority</Label>
+                      <Select
+                        value={newTaskPriority}
+                        onValueChange={(value: "low" | "medium" | "high") =>
+                          setNewTaskPriority(value)
+                        }
+                      >
+                        <SelectTrigger className='mt-1'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='low'>Low</SelectItem>
+                          <SelectItem value='medium'>Medium</SelectItem>
+                          <SelectItem value='high'>High</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor='recurrence'>Recurrence</Label>
+                    <Select
+                      value={newTaskRecurrence}
+                      onValueChange={(
+                        value: "none" | "daily" | "weekly" | "monthly"
+                      ) => setNewTaskRecurrence(value)}
+                    >
+                      <SelectTrigger className='mt-1'>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='none'>
+                          <div className='flex items-center gap-2'>
+                            <span>📅</span>
+                            <span>One-time</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value='daily'>
+                          <div className='flex items-center gap-2'>
+                            <Repeat className='w-4 h-4' />
+                            <span>Daily</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value='weekly'>
+                          <div className='flex items-center gap-2'>
+                            <Repeat className='w-4 h-4' />
+                            <span>Weekly</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value='monthly'>
+                          <div className='flex items-center gap-2'>
+                            <Repeat className='w-4 h-4' />
+                            <span>Monthly</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Button
+                    onClick={handleAddTask}
+                    className='w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded p-2'
+                  >
+                    Create Task
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+
+        {/* Task Cards Grid */}
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+          <TaskCard
+            title='Morning Routine'
+            timeOfDay='morning'
+            tasks={morningTasks}
+            onAddTask={() => openAddTaskDialog("morning")}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+          />
+
+          <TaskCard
+            title='Daily Tasks'
+            timeOfDay='afternoon'
+            tasks={afternoonTasks}
+            onAddTask={() => openAddTaskDialog("afternoon")}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+          />
+
+          <TaskCard
+            title='Evening Routine'
+            timeOfDay='evening'
+            tasks={eveningTasks}
+            onAddTask={() => openAddTaskDialog("evening")}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+          />
+        </div>
+
+        {/* Achievement Banner */}
+        {overallProgress === 100 && totalTasks > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className='mt-8 text-center'
+          >
+            <div className='glass rounded-2xl p-6 border border-success/20 bg-success/5'>
+              <div className='flex items-center justify-center gap-3 mb-2'>
+                <div className='w-12 h-12 rounded-full bg-success/20 flex items-center justify-center'>
+                  <Sparkles className='w-6 h-6 text-success' />
+                </div>
+                <div>
+                  <h3 className='text-xl font-bold text-success'>
+                    Amazing! All tasks completed! 🎉
+                  </h3>
+                  <p className='text-sm text-muted-foreground'>
+                    You've had a productive day. Take some time to celebrate!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
-};
+}

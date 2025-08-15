@@ -23,6 +23,10 @@ interface RewardsState {
   getRewardsForUser: (userId: string) => Reward[];
   getNextReward: (userId: string, currentXP: number) => Reward | null;
   getCurrentLevel: (userId: string, currentXP: number) => number;
+  generateRewards: (rewards: Array<{
+    name: string;
+    cost: number;
+  }>) => void;
 }
 
 export const useRewardsStore = create<RewardsState>()(
@@ -94,6 +98,25 @@ export const useRewardsStore = create<RewardsState>()(
         return unlockedRewards.length > 0
           ? Math.max(...unlockedRewards.map((r) => r.level))
           : 1;
+      },
+
+      generateRewards: (rewards) => {
+        const currentUserId = "default-user"; // Fallback for now
+        
+        const newRewards = rewards.map((reward, index) => ({
+          id: (Date.now() + index).toString(),
+          name: reward.name,
+          description: `Reward: ${reward.name}`,
+          level: index + 1,
+          xpRequired: reward.cost,
+          userId: currentUserId,
+          unlocked: false,
+          createdAt: new Date().toISOString(),
+        }));
+
+        set((state) => ({
+          rewards: [...state.rewards, ...newRewards],
+        }));
       },
     }),
     {

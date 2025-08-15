@@ -10,7 +10,12 @@ interface User {
   xp: number;
   totalXp: number;
   joinedAt: string;
-  onboardingComplete?: boolean;
+  onboardingComplete: boolean;
+  focusAreas: string[];
+  primaryGoal: string;
+  experienceLevel: string;
+  timeCommitment: string;
+  preferences: Record<string, any>;
 }
 
 interface AuthState {
@@ -25,6 +30,7 @@ interface AuthState {
   logout: () => void;
   checkAuth: () => void;
   updateUser: (updates: Partial<User>) => void;
+  setOnboardingCompleted: (completed: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -75,6 +81,12 @@ export const useAuthStore = create<AuthState>()(
           xp: 0,
           totalXp: 0,
           joinedAt: new Date().toISOString(),
+          onboardingComplete: false,
+          focusAreas: [],
+          primaryGoal: "",
+          experienceLevel: "",
+          timeCommitment: "",
+          preferences: {},
         };
 
         users.push(newUser);
@@ -112,6 +124,26 @@ export const useAuthStore = create<AuthState>()(
           );
           if (userIndex !== -1) {
             users[userIndex] = { ...users[userIndex], ...updates };
+            localStorage.setItem("habit_app_users", JSON.stringify(users));
+          }
+        }
+      },
+
+      setOnboardingCompleted: (completed: boolean) => {
+        const state = get();
+        if (state.user) {
+          const updatedUser = { ...state.user, onboardingComplete: completed };
+          set({ user: updatedUser });
+
+          // Update in localStorage
+          const users = JSON.parse(
+            localStorage.getItem("habit_app_users") || "[]"
+          );
+          const userIndex = users.findIndex(
+            (u: any) => u.id === state.user?.id
+          );
+          if (userIndex !== -1) {
+            users[userIndex] = { ...users[userIndex], onboardingComplete: completed };
             localStorage.setItem("habit_app_users", JSON.stringify(users));
           }
         }
