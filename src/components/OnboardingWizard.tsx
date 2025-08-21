@@ -652,31 +652,31 @@ export default function OnboardingWizard() {
         return (
           <div className="text-center space-y-8 py-8">
             <div className="space-y-4">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary-light bg-clip-text text-transparent">
                 Welcome to<br />HabitForge
               </h1>
               <div className="flex items-center justify-center gap-2">
-                <h2 className="text-2xl font-semibold text-muted-foreground">Esteemed Trailblazer!</h2>
-                <Sparkles className="h-6 w-6 text-yellow-500" />
+                <h2 className="text-2xl font-semibold text-foreground/80">Esteemed Trailblazer!</h2>
+                <Sparkles className="h-6 w-6 text-primary-glow" />
               </div>
             </div>
             
             <div className="max-w-2xl mx-auto space-y-6">
-              <p className="text-lg text-muted-foreground">
-                We're absolutely <span className="text-pink-600 font-semibold">thrilled</span> to welcome you into our exclusive circle of{" "}
-                <span className="text-blue-600 font-semibold">visionaries</span>!
+              <p className="text-lg text-foreground/70">
+                We're absolutely <span className="text-primary font-semibold">thrilled</span> to welcome you into our exclusive circle of{" "}
+                <span className="text-primary-glow font-semibold">visionaries</span>!
               </p>
               
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <p className="text-base text-foreground/60 leading-relaxed">
                 Your extraordinary journey of transformation begins today. With elegant tools, 
                 personalized encouragement, and a community that celebrates your every victory, 
-                you're not just a user—you're a <span className="text-cyan-600 font-semibold">cherished architect of change</span>.
+                you're not just a user—you're a <span className="text-primary font-semibold">cherished architect of change</span>.
               </p>
               
               <div className="flex items-center justify-center gap-2 pt-4">
-                <Heart className="h-5 w-5 text-pink-500" />
-                <span className="text-muted-foreground">Let's embark on this magnificent adventure together!</span>
-                <Sparkles className="h-5 w-5 text-purple-500" />
+                <Heart className="h-5 w-5 text-primary-glow" />
+                <span className="text-foreground/60">Let's embark on this magnificent adventure together!</span>
+                <Sparkles className="h-5 w-5 text-primary" />
               </div>
             </div>
           </div>
@@ -687,10 +687,10 @@ export default function OnboardingWizard() {
           <div className="space-y-8">
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Sparkles className="h-8 w-8 text-blue-500" />
-                <h2 className="text-4xl font-bold text-blue-600">Choose Your Adventure</h2>
+                <Sparkles className="h-8 w-8 text-primary" />
+                <h2 className="text-4xl font-bold text-primary">Choose Your Adventure</h2>
               </div>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-foreground/70 text-lg">
                 Select all areas that spark your curiosity. Mix and match to create your unique journey!
               </p>
             </div>
@@ -741,8 +741,8 @@ export default function OnboardingWizard() {
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-4xl font-bold text-red-600">Tell Us Your Story</h2>
-              <p className="text-muted-foreground text-lg">
+              <h2 className="text-4xl font-bold text-primary">Tell Us Your Story</h2>
+              <p className="text-foreground/70 text-lg">
                 Understanding your background helps us craft the perfect journey for you.
               </p>
             </div>
@@ -751,7 +751,7 @@ export default function OnboardingWizard() {
               {/* Experience Level */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                   Experience Level in Your Goal Area
                 </h3>
                 
@@ -790,7 +790,7 @@ export default function OnboardingWizard() {
               {/* Time Commitment */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary-glow rounded-full"></div>
                   Daily Time Commitment
                 </h3>
                 
@@ -834,10 +834,10 @@ export default function OnboardingWizard() {
           <div className="space-y-8">
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Clock className="h-8 w-8 text-purple-500" />
-                <h2 className="text-4xl font-bold text-purple-600">Your Learning DNA</h2>
+                <Clock className="h-8 w-8 text-primary" />
+                <h2 className="text-4xl font-bold text-primary">Your Learning DNA</h2>
               </div>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-foreground/70 text-lg">
                 Everyone learns differently. Help us understand your unique style and rhythm.
               </p>
             </div>
@@ -846,7 +846,7 @@ export default function OnboardingWizard() {
               {/* Learning Style */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                   Preferred Learning Style
                 </h3>
                 
@@ -885,7 +885,7 @@ export default function OnboardingWizard() {
               {/* Schedule Preference */}
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary-glow rounded-full"></div>
                   Preferred Schedule
                 </h3>
                 
@@ -928,15 +928,15 @@ export default function OnboardingWizard() {
         return (
           <div className="space-y-8">
             <div className="text-center space-y-6">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary-light bg-clip-text text-transparent">
                 Setup Your Magnificent Journey
               </h2>
-              <p className="text-muted-foreground text-base">Step 5 of 5</p>
+              <p className="text-foreground/60 text-base">Step 5 of 5</p>
               
               <div className="py-8">
-                <Heart className="h-16 w-16 text-red-500 mx-auto mb-6" />
-                <h3 className="text-3xl font-bold text-red-500 mb-4">Your Why</h3>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
+                <Heart className="h-16 w-16 text-primary-glow mx-auto mb-6" />
+                <h3 className="text-3xl font-bold text-primary mb-4">Your Why</h3>
+                <p className="text-foreground/70 max-w-2xl mx-auto">
                   What ignites your passion? Your 'why' will be your North Star on challenging days.
                 </p>
               </div>
@@ -954,10 +954,10 @@ export default function OnboardingWizard() {
             </Card>
 
             <div className="text-center py-4">
-              <p className="text-muted-foreground flex items-center justify-center gap-2">
+              <p className="text-foreground/60 flex items-center justify-center gap-2">
                 <Sparkles className="h-4 w-4" />
                 Your story inspires us and fuels your journey
-                <Heart className="h-4 w-4 text-red-500" />
+                <Heart className="h-4 w-4 text-primary-glow" />
               </p>
             </div>
           </div>
@@ -969,23 +969,23 @@ export default function OnboardingWizard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
+    <div className="min-h-screen bg-gradient-welcome p-4">
       <div className="max-w-4xl mx-auto">
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-sm font-medium text-foreground/70">
               Step {currentStep} of {totalSteps}
             </span>
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-sm font-medium text-foreground/70">
               {Math.round(progress)}% Complete
             </span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-3 bg-white/40" />
         </div>
 
         {/* Main Content */}
-        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-welcome border-0 bg-card/95 backdrop-blur-lg">
           <CardContent className="p-8">
             {renderStep()}
           </CardContent>
@@ -997,7 +997,7 @@ export default function OnboardingWizard() {
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 border-primary/20 text-primary hover:bg-primary/10 transition-calm"
           >
             <ArrowLeft className="h-4 w-4" />
             Previous
@@ -1007,7 +1007,7 @@ export default function OnboardingWizard() {
             <Button
               onClick={handleComplete}
               disabled={!canProceedToNext()}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+              className="flex items-center gap-2 bg-primary hover:bg-primary-glow text-primary-foreground shadow-calm transition-calm"
             >
               Create My Dashboard!
               <Sparkles className="h-4 w-4" />
@@ -1016,7 +1016,7 @@ export default function OnboardingWizard() {
             <Button
               onClick={handleNext}
               disabled={!canProceedToNext()}
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              className="flex items-center gap-2 bg-primary hover:bg-primary-glow text-primary-foreground shadow-calm transition-calm"
             >
               Next
               <ArrowRight className="h-4 w-4" />

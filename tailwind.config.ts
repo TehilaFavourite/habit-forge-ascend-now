@@ -27,7 +27,9 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					light: 'hsl(var(--primary-light))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -68,6 +70,19 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-calm': 'var(--gradient-calm)',
+				'gradient-soothing': 'var(--gradient-soothing)',
+				'gradient-welcome': 'var(--gradient-welcome)'
+			},
+			boxShadow: {
+				'calm': 'var(--shadow-calm)',
+				'gentle': 'var(--shadow-gentle)',
+				'welcome': 'var(--shadow-welcome)'
+			},
+			transitionTimingFunction: {
+				'calm': 'var(--transition-calm)'
 			},
 			keyframes: {
 				'accordion-down': {
