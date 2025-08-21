@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/stores/authStore";
 import { useAchievementsStore } from "@/stores/achievementsStore";
 import { useHabitStore } from "@/stores/habitStore";
@@ -11,24 +12,39 @@ import { useXPStore } from "@/stores/xpStore";
 import { useJournalStore } from "@/stores/journalStore";
 import { useTemplateStore } from "@/stores/templateStore";
 import { useNavigate } from "react-router-dom";
-// import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
 import {
   ArrowLeft,
   ArrowRight,
   Sparkles,
-  Target,
-  Users,
-  Clock,
-  Brain,
   Heart,
-  Lightbulb,
+  Computer,
+  Dumbbell,
+  GraduationCap,
+  Briefcase,
+  Palette,
+  Music,
+  Brain,
+  Rocket,
+  Globe,
+  ChefHat,
+  DollarSign,
+  Users,
+  Eye,
+  Wrench,
+  BookOpen,
+  User,
+  Sun,
+  Moon,
+  Shuffle,
+  Clock,
+  Zap,
+  Scale,
+  Flame
 } from "lucide-react";
 
 interface OnboardingData {
   focusAreas: string[];
-  customFocusArea: string;
   experienceLevel: string;
   timeCommitment: string;
   learningStyle: string;
@@ -40,98 +56,212 @@ const focusAreaOptions = [
   {
     id: "programming",
     label: "Programming & Software Development",
-    icon: "💻",
+    icon: Computer,
     description: "Learn coding languages, frameworks, and development skills",
     gradient: "from-blue-500 to-cyan-500",
+    color: "bg-blue-100 text-blue-700"
   },
   {
     id: "fitness",
     label: "Physical Fitness & Health",
-    icon: "💪",
+    icon: Dumbbell,
     description: "Build strength, endurance, and maintain healthy lifestyle",
     gradient: "from-green-500 to-emerald-500",
+    color: "bg-green-100 text-green-700"
   },
   {
     id: "learning",
     label: "Academic Learning & Education",
-    icon: "📚",
+    icon: GraduationCap,
     description: "Study subjects, earn certifications, expand knowledge",
     gradient: "from-purple-500 to-violet-500",
+    color: "bg-purple-100 text-purple-700"
   },
   {
     id: "career",
     label: "Career Development",
-    icon: "💼",
+    icon: Briefcase,
     description: "Professional growth, networking, skill advancement",
     gradient: "from-orange-500 to-red-500",
+    color: "bg-orange-100 text-orange-700"
   },
   {
     id: "creative",
     label: "Creative Arts & Design",
-    icon: "🎨",
+    icon: Palette,
     description: "Art, design, writing, photography, creative expression",
     gradient: "from-pink-500 to-rose-500",
+    color: "bg-pink-100 text-pink-700"
   },
   {
     id: "music",
     label: "Music & Audio",
-    icon: "🎵",
+    icon: Music,
     description: "Learn instruments, music theory, audio production",
     gradient: "from-indigo-500 to-purple-500",
+    color: "bg-indigo-100 text-indigo-700"
   },
   {
     id: "wellness",
     label: "Mental Health & Wellness",
-    icon: "🧘",
+    icon: Brain,
     description: "Mindfulness, meditation, stress management, self-care",
     gradient: "from-teal-500 to-cyan-500",
+    color: "bg-teal-100 text-teal-700"
   },
   {
     id: "business",
     label: "Business & Entrepreneurship",
-    icon: "🚀",
+    icon: Rocket,
     description: "Start business, develop products, marketing, sales",
     gradient: "from-yellow-500 to-orange-500",
+    color: "bg-yellow-100 text-yellow-700"
   },
   {
     id: "languages",
     label: "Language Learning",
-    icon: "🌍",
+    icon: Globe,
     description: "Learn new languages, improve communication skills",
     gradient: "from-emerald-500 to-teal-500",
+    color: "bg-emerald-100 text-emerald-700"
   },
   {
     id: "cooking",
     label: "Cooking & Nutrition",
-    icon: "👨‍🍳",
+    icon: ChefHat,
     description: "Culinary skills, healthy eating, meal planning",
     gradient: "from-amber-500 to-yellow-500",
+    color: "bg-amber-100 text-amber-700"
   },
   {
     id: "finance",
     label: "Personal Finance",
-    icon: "💰",
+    icon: DollarSign,
     description: "Budgeting, investing, financial planning, wealth building",
     gradient: "from-green-600 to-emerald-600",
+    color: "bg-green-100 text-green-700"
   },
   {
     id: "relationships",
     label: "Social & Relationships",
-    icon: "👥",
+    icon: Users,
     description: "Communication skills, networking, personal relationships",
     gradient: "from-rose-500 to-pink-500",
+    color: "bg-rose-100 text-rose-700"
   },
+];
+
+const experienceLevels = [
+  {
+    id: "beginner",
+    label: "Beginner",
+    description: "Starting fresh with curiosity",
+    icon: Sparkles,
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    id: "intermediate", 
+    label: "Intermediate",
+    description: "Some experience under my belt",
+    icon: Rocket,
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    id: "advanced",
+    label: "Advanced", 
+    description: "Looking to master and excel",
+    icon: Zap,
+    gradient: "from-purple-500 to-pink-500"
+  }
+];
+
+const timeCommitments = [
+  {
+    id: "5-15",
+    label: "5-15 minutes",
+    description: "Quick, focused sessions",
+    icon: Clock,
+    gradient: "from-yellow-500 to-orange-500"
+  },
+  {
+    id: "15-30",
+    label: "15-30 minutes", 
+    description: "Balanced, steady approach",
+    icon: Scale,
+    gradient: "from-blue-500 to-indigo-500"
+  },
+  {
+    id: "30+",
+    label: "30+ minutes",
+    description: "Deep focus and immersion",
+    icon: Flame,
+    gradient: "from-pink-500 to-red-500"
+  }
+];
+
+const learningStyles = [
+  {
+    id: "visual",
+    label: "Visual Learner",
+    description: "Videos, diagrams, reading",
+    icon: Eye,
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    id: "hands-on",
+    label: "Hands-On",
+    description: "Practice, projects, experiments", 
+    icon: Wrench,
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    id: "structured",
+    label: "Structured",
+    description: "Courses, step-by-step guides",
+    icon: BookOpen,
+    gradient: "from-purple-500 to-indigo-500"
+  },
+  {
+    id: "social",
+    label: "Social",
+    description: "Groups, mentors, discussions",
+    icon: Users,
+    gradient: "from-pink-500 to-rose-500"
+  }
+];
+
+const schedules = [
+  {
+    id: "morning",
+    label: "Morning Person",
+    description: "Early bird catches the worm",
+    icon: Sun,
+    gradient: "from-orange-500 to-yellow-500"
+  },
+  {
+    id: "night",
+    label: "Night Owl",
+    description: "Evening routines and late sessions",
+    icon: Moon,
+    gradient: "from-indigo-500 to-purple-500"
+  },
+  {
+    id: "flexible",
+    label: "Flexible",
+    description: "Anytime that fits my life",
+    icon: Shuffle,
+    gradient: "from-teal-500 to-cyan-500"
+  }
 ];
 
 export default function OnboardingWizard() {
   const navigate = useNavigate();
   const { updateUser } = useAuthStore();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 5; // Reduced from 6 to 5
+  const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
   const [data, setData] = useState<OnboardingData>({
     focusAreas: [],
-    customFocusArea: "",
     experienceLevel: "",
     timeCommitment: "",
     learningStyle: "",
@@ -140,11 +270,8 @@ export default function OnboardingWizard() {
   });
 
   const { toast } = useToast();
-  // const navigate = useNavigate();
   const { setOnboardingCompleted } = useAuthStore();
-  const initializeAchievements = useAchievementsStore(
-    (state) => state.initialize
-  );
+  const initializeAchievements = useAchievementsStore((state) => state.initialize);
   const generateHabits = useHabitStore((state) => state.generateHabits);
   const generateTodos = useTodoStore((state) => state.generateTodos);
   const generateRewards = useRewardsStore((state) => state.generateRewards);
@@ -462,64 +589,94 @@ export default function OnboardingWizard() {
     // Remove duplicates and save to localStorage
     const uniqueTabs = [...new Set(recommendedTabs)];
     localStorage.setItem('dashboard-visible-tabs', JSON.stringify(uniqueTabs));
+  };
 
-    // Save user preferences for future personalization
-    localStorage.setItem('user-onboarding-data', JSON.stringify(data));
+  const handleComplete = async () => {
+    try {
+      // Update user with onboarding data
+      updateUser({
+        focusAreas: data.focusAreas,
+        experienceLevel: data.experienceLevel,
+        timeCommitment: data.timeCommitment,
+        preferences: {
+          learningStyle: data.learningStyle,
+          schedule: data.schedule,
+          motivation: data.motivation,
+        },
+        onboardingComplete: true,
+      });
 
-    setOnboardingCompleted(true);
-    toast({
-      title: "Journey Setup Complete!",
-      description:
-        "Your personalized dashboard is ready with habits, tasks, rewards, achievements, and more!",
-    });
-    navigate("/dashboard");
+      // Generate personalized content
+      generatePersonalizedContent();
+
+      toast({
+        title: "Welcome to HabitForge! 🎉",
+        description: "Your personalized dashboard is ready to help you build amazing habits!",
+      });
+
+      // Mark onboarding as completed
+      setOnboardingCompleted(true);
+
+      // Navigate to dashboard
+      navigate("/");
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const canProceedToNext = () => {
+    switch (currentStep) {
+      case 1:
+        return true; // Welcome screen
+      case 2:
+        return data.focusAreas.length > 0;
+      case 3:
+        return data.experienceLevel && data.timeCommitment;
+      case 4:
+        return data.learningStyle && data.schedule;
+      case 5:
+        return data.motivation.trim().length > 10;
+      default:
+        return true;
+    }
   };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className='text-center space-y-8 py-12 px-4'>
-            <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-violet-400 via-pink-400 to-cyan-400 rounded-full blur-3xl opacity-20 animate-pulse'></div>
-              <Sparkles className='h-20 w-20 text-transparent bg-gradient-to-r from-violet-500 via-pink-500 to-cyan-500 bg-clip-text mx-auto relative z-10 animate-bounce' />
-            </div>
-            <div className='space-y-4'>
-              <h1 className='text-5xl md:text-7xl font-black bg-gradient-to-r from-violet-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent leading-tight'>
-                Welcome to
+          <div className="text-center space-y-8 py-8">
+            <div className="space-y-4">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+                Welcome to<br />HabitForge
               </h1>
-              <div className='relative'>
-                <h2 className='text-4xl md:text-6xl font-black bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 bg-clip-text text-transparent'>
-                  HabitForge
-                </h2>
-                <div className='absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-ping opacity-75'></div>
+              <div className="flex items-center justify-center gap-2">
+                <h2 className="text-2xl font-semibold text-muted-foreground">Esteemed Trailblazer!</h2>
+                <Sparkles className="h-6 w-6 text-yellow-500" />
               </div>
-              <h3 className='text-2xl md:text-3xl font-bold text-gray-700'>
-                Esteemed Trailblazer! ✨
-              </h3>
             </div>
-            <div className='max-w-2xl mx-auto space-y-6'>
-              <p className='text-lg md:text-xl text-gray-600 leading-relaxed font-medium'>
-                We're absolutely{" "}
-                <span className='font-bold text-pink-600'>thrilled</span> to
-                welcome you into our exclusive circle of{" "}
-                <span className='font-bold text-violet-600'>visionaries</span>!
+            
+            <div className="max-w-2xl mx-auto space-y-6">
+              <p className="text-lg text-muted-foreground">
+                We're absolutely <span className="text-pink-600 font-semibold">thrilled</span> to welcome you into our exclusive circle of{" "}
+                <span className="text-blue-600 font-semibold">visionaries</span>!
               </p>
-              <p className='text-base md:text-lg text-gray-500'>
-                Your extraordinary journey of transformation begins today. With
-                elegant tools, personalized encouragement, and a community that
-                celebrates your every victory, you're not just a user—you're a{" "}
-                <span className='font-semibold text-cyan-600'>
-                  cherished architect of change
-                </span>
-                .
+              
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Your extraordinary journey of transformation begins today. With elegant tools, 
+                personalized encouragement, and a community that celebrates your every victory, 
+                you're not just a user—you're a <span className="text-cyan-600 font-semibold">cherished architect of change</span>.
               </p>
-              <div className='flex items-center justify-center gap-2 text-sm text-gray-400'>
-                <Heart className='w-4 h-4 text-pink-400' />
-                <span>
-                  Let's embark on this magnificent adventure together!
-                </span>
-                <Sparkles className='w-4 h-4 text-violet-400' />
+              
+              <div className="flex items-center justify-center gap-2 pt-4">
+                <Heart className="h-5 w-5 text-pink-500" />
+                <span className="text-muted-foreground">Let's embark on this magnificent adventure together!</span>
+                <Sparkles className="h-5 w-5 text-purple-500" />
               </div>
             </div>
           </div>
@@ -527,251 +684,145 @@ export default function OnboardingWizard() {
 
       case 2:
         return (
-          <div className='space-y-8 py-8'>
-            <div className='text-center space-y-3'>
-              <div className='relative'>
-                <Users className='w-12 h-12 text-cyan-500 mx-auto' />
-                <div className='absolute -top-1 -right-1 w-4 h-4 bg-pink-400 rounded-full animate-pulse'></div>
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles className="h-8 w-8 text-blue-500" />
+                <h2 className="text-4xl font-bold text-blue-600">Choose Your Adventure</h2>
               </div>
-              <h2 className='text-3xl font-bold bg-gradient-to-r from-cyan-600 to-violet-600 bg-clip-text text-transparent'>
-                Choose Your Adventure
-              </h2>
-              <p className='text-gray-500 max-w-md mx-auto'>
-                Select all areas that spark your curiosity. Mix and match to
-                create your unique journey!
+              <p className="text-muted-foreground text-lg">
+                Select all areas that spark your curiosity. Mix and match to create your unique journey!
               </p>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-              {focusAreaOptions.map((area) => (
-                <div
-                  key={area.id}
-                  className={`group relative overflow-hidden rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
-                    data.focusAreas.includes(area.id)
-                      ? "border-transparent shadow-2xl scale-105"
-                      : "border-gray-200 hover:border-gray-300 hover:shadow-lg"
-                  }`}
-                  onClick={() => {
-                    updateData({
-                      focusAreas: data.focusAreas.includes(area.id)
-                        ? data.focusAreas.filter((a) => a !== area.id)
-                        : [...data.focusAreas, area.id],
-                    });
-                  }}
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${
-                      area.gradient
-                    } opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
-                      data.focusAreas.includes(area.id) ? "opacity-20" : ""
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {focusAreaOptions.map((option) => {
+                const isSelected = data.focusAreas.includes(option.id);
+                const Icon = option.icon;
+                
+                return (
+                  <Card
+                    key={option.id}
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                      isSelected 
+                        ? 'ring-2 ring-primary shadow-lg' 
+                        : 'hover:ring-1 hover:ring-muted-foreground/20'
                     }`}
-                  ></div>
-
-                  {data.focusAreas.includes(area.id) && (
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${area.gradient} opacity-10`}
-                    ></div>
-                  )}
-
-                  <div className='relative p-5 space-y-3'>
-                    <div className='flex items-center gap-3'>
-                      <div
-                        className={`text-2xl p-2 rounded-xl bg-gradient-to-br ${area.gradient} bg-opacity-10`}
-                      >
-                        {area.icon}
+                    onClick={() => {
+                      const newFocusAreas = isSelected
+                        ? data.focusAreas.filter(area => area !== option.id)
+                        : [...data.focusAreas, option.id];
+                      updateData({ focusAreas: newFocusAreas });
+                    }}
+                  >
+                    <CardHeader className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${option.gradient}`}>
+                          <Icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg font-semibold leading-tight">
+                            {option.label}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            {option.description}
+                          </p>
+                        </div>
                       </div>
-                      <span className='font-semibold text-gray-800 text-sm leading-tight'>
-                        {area.label}
-                      </span>
-                    </div>
-                    <p className='text-xs text-gray-500 leading-relaxed'>
-                      {area.description}
-                    </p>
-                  </div>
-
-                  {data.focusAreas.includes(area.id) && (
-                    <div className='absolute top-3 right-3'>
-                      <div
-                        className={`w-6 h-6 rounded-full bg-gradient-to-r ${area.gradient} flex items-center justify-center`}
-                      >
-                        <span className='text-white text-xs font-bold'>✓</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className='space-y-3 bg-gray-50 rounded-2xl p-6 border border-gray-100'>
-              <label className='block text-sm font-semibold text-gray-700'>
-                🎯 Custom Focus Area
-              </label>
-              <input
-                placeholder='e.g., Public Speaking Mastery, Quantum Physics, Beekeeping...'
-                value={data.customFocusArea}
-                onChange={(e) =>
-                  updateData({ customFocusArea: e.target.value })
-                }
-                className='w-full bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all duration-200'
-              />
+                    </CardHeader>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         );
 
       case 3:
         return (
-          <div className='space-y-8 py-8'>
-            <div className='text-center space-y-3'>
-              <Brain className='w-12 h-12 text-pink-500 mx-auto' />
-              <h2 className='text-3xl font-bold bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent'>
-                Tell Us Your Story
-              </h2>
-              <p className='text-gray-500 max-w-md mx-auto'>
-                Understanding your background helps us craft the perfect journey
-                for you.
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-4xl font-bold text-red-600">Tell Us Your Story</h2>
+              <p className="text-muted-foreground text-lg">
+                Understanding your background helps us craft the perfect journey for you.
               </p>
             </div>
 
-            <div className='space-y-8'>
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
-                  <span className='w-2 h-2 bg-pink-400 rounded-full'></span>
+            <div className="space-y-8">
+              {/* Experience Level */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
                   Experience Level in Your Goal Area
                 </h3>
-                <div className='grid grid-cols-1 gap-3'>
-                  {[
-                    {
-                      value: "beginner",
-                      label: "Beginner",
-                      desc: "Starting fresh with curiosity",
-                      icon: "🌱",
-                      color: "from-green-400 to-emerald-400",
-                    },
-                    {
-                      value: "intermediate",
-                      label: "Intermediate",
-                      desc: "Some experience under my belt",
-                      icon: "🚀",
-                      color: "from-blue-400 to-cyan-400",
-                    },
-                    {
-                      value: "advanced",
-                      label: "Advanced",
-                      desc: "Looking to master and excel",
-                      icon: "⭐",
-                      color: "from-purple-400 to-pink-400",
-                    },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className={`relative overflow-hidden rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        data.experienceLevel === option.value
-                          ? "border-transparent shadow-xl bg-gradient-to-r " +
-                            option.color +
-                            " bg-opacity-10"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
-                      onClick={() =>
-                        updateData({ experienceLevel: option.value })
-                      }
-                    >
-                      <div className='flex items-center gap-4'>
-                        <div
-                          className={`text-2xl p-2 rounded-lg bg-gradient-to-r ${option.color} bg-opacity-20`}
-                        >
-                          {option.icon}
-                        </div>
-                        <div className='flex-1'>
-                          <div className='font-semibold text-gray-800'>
-                            {option.label}
+                
+                <div className="space-y-3">
+                  {experienceLevels.map((level) => {
+                    const isSelected = data.experienceLevel === level.id;
+                    const Icon = level.icon;
+                    
+                    return (
+                      <Card
+                        key={level.id}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          isSelected 
+                            ? 'ring-2 ring-primary bg-primary/5' 
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => updateData({ experienceLevel: level.id })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${level.gradient}`}>
+                              <Icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{level.label}</h4>
+                              <p className="text-muted-foreground">{level.description}</p>
+                            </div>
                           </div>
-                          <div className='text-sm text-gray-500'>
-                            {option.desc}
-                          </div>
-                        </div>
-                        {data.experienceLevel === option.value && (
-                          <div
-                            className={`w-6 h-6 rounded-full bg-gradient-to-r ${option.color} flex items-center justify-center`}
-                          >
-                            <span className='text-white text-xs font-bold'>
-                              ✓
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
-                  <span className='w-2 h-2 bg-orange-400 rounded-full'></span>
+              {/* Time Commitment */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
                   Daily Time Commitment
                 </h3>
-                <div className='grid grid-cols-1 gap-3'>
-                  {[
-                    {
-                      value: "minimal",
-                      label: "5-15 minutes",
-                      desc: "Quick, focused sessions",
-                      icon: "⚡",
-                      color: "from-yellow-400 to-orange-400",
-                    },
-                    {
-                      value: "moderate",
-                      label: "15-30 minutes",
-                      desc: "Balanced, steady approach",
-                      icon: "⚖️",
-                      color: "from-blue-400 to-indigo-400",
-                    },
-                    {
-                      value: "dedicated",
-                      label: "30+ minutes",
-                      desc: "Deep focus and immersion",
-                      icon: "🔥",
-                      color: "from-red-400 to-pink-400",
-                    },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className={`relative overflow-hidden rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        data.timeCommitment === option.value
-                          ? "border-transparent shadow-xl bg-gradient-to-r " +
-                            option.color +
-                            " bg-opacity-10"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
-                      onClick={() =>
-                        updateData({ timeCommitment: option.value })
-                      }
-                    >
-                      <div className='flex items-center gap-4'>
-                        <div
-                          className={`text-2xl p-2 rounded-lg bg-gradient-to-r ${option.color} bg-opacity-20`}
-                        >
-                          {option.icon}
-                        </div>
-                        <div className='flex-1'>
-                          <div className='font-semibold text-gray-800'>
-                            {option.label}
+                
+                <div className="space-y-3">
+                  {timeCommitments.map((time) => {
+                    const isSelected = data.timeCommitment === time.id;
+                    const Icon = time.icon;
+                    
+                    return (
+                      <Card
+                        key={time.id}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          isSelected 
+                            ? 'ring-2 ring-primary bg-primary/5' 
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => updateData({ timeCommitment: time.id })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${time.gradient}`}>
+                              <Icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{time.label}</h4>
+                              <p className="text-muted-foreground">{time.description}</p>
+                            </div>
                           </div>
-                          <div className='text-sm text-gray-500'>
-                            {option.desc}
-                          </div>
-                        </div>
-                        {data.timeCommitment === option.value && (
-                          <div
-                            className={`w-6 h-6 rounded-full bg-gradient-to-r ${option.color} flex items-center justify-center`}
-                          >
-                            <span className='text-white text-xs font-bold'>
-                              ✓
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -780,163 +831,93 @@ export default function OnboardingWizard() {
 
       case 4:
         return (
-          <div className='space-y-8 py-8'>
-            <div className='text-center space-y-3'>
-              <Clock className='w-12 h-12 text-indigo-500 mx-auto' />
-              <h2 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
-                Your Learning DNA
-              </h2>
-              <p className='text-gray-500 max-w-md mx-auto'>
-                Everyone learns differently. Help us understand your unique
-                style and rhythm.
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Clock className="h-8 w-8 text-purple-500" />
+                <h2 className="text-4xl font-bold text-purple-600">Your Learning DNA</h2>
+              </div>
+              <p className="text-muted-foreground text-lg">
+                Everyone learns differently. Help us understand your unique style and rhythm.
               </p>
             </div>
 
-            <div className='space-y-8'>
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
-                  <span className='w-2 h-2 bg-indigo-400 rounded-full'></span>
+            <div className="space-y-8">
+              {/* Learning Style */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   Preferred Learning Style
                 </h3>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
-                  {[
-                    {
-                      value: "visual",
-                      label: "Visual Learner",
-                      desc: "Videos, diagrams, reading",
-                      icon: "👀",
-                      color: "from-blue-400 to-cyan-400",
-                    },
-                    {
-                      value: "hands-on",
-                      label: "Hands-On",
-                      desc: "Practice, projects, experiments",
-                      icon: "🔧",
-                      color: "from-green-400 to-emerald-400",
-                    },
-                    {
-                      value: "structured",
-                      label: "Structured",
-                      desc: "Courses, step-by-step guides",
-                      icon: "📋",
-                      color: "from-purple-400 to-violet-400",
-                    },
-                    {
-                      value: "social",
-                      label: "Social",
-                      desc: "Groups, mentors, discussions",
-                      icon: "👥",
-                      color: "from-pink-400 to-rose-400",
-                    },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className={`relative overflow-hidden rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        data.learningStyle === option.value
-                          ? "border-transparent shadow-xl bg-gradient-to-r " +
-                            option.color +
-                            " bg-opacity-10"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
-                      onClick={() =>
-                        updateData({ learningStyle: option.value })
-                      }
-                    >
-                      <div className='flex items-center gap-4'>
-                        <div
-                          className={`text-2xl p-2 rounded-lg bg-gradient-to-r ${option.color} bg-opacity-20`}
-                        >
-                          {option.icon}
-                        </div>
-                        <div className='flex-1'>
-                          <div className='font-semibold text-gray-800'>
-                            {option.label}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {learningStyles.map((style) => {
+                    const isSelected = data.learningStyle === style.id;
+                    const Icon = style.icon;
+                    
+                    return (
+                      <Card
+                        key={style.id}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          isSelected 
+                            ? 'ring-2 ring-primary bg-primary/5' 
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => updateData({ learningStyle: style.id })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${style.gradient}`}>
+                              <Icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{style.label}</h4>
+                              <p className="text-muted-foreground text-sm">{style.description}</p>
+                            </div>
                           </div>
-                          <div className='text-sm text-gray-500'>
-                            {option.desc}
-                          </div>
-                        </div>
-                        {data.learningStyle === option.value && (
-                          <div
-                            className={`w-6 h-6 rounded-full bg-gradient-to-r ${option.color} flex items-center justify-center`}
-                          >
-                            <span className='text-white text-xs font-bold'>
-                              ✓
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className='space-y-4'>
-                <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
-                  <span className='w-2 h-2 bg-purple-400 rounded-full'></span>
+              {/* Schedule Preference */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                   Preferred Schedule
                 </h3>
-                <div className='grid grid-cols-1 gap-3'>
-                  {[
-                    {
-                      value: "morning",
-                      label: "Morning Person",
-                      desc: "Early bird catches the worm",
-                      icon: "🌅",
-                      color: "from-amber-400 to-orange-400",
-                    },
-                    {
-                      value: "evening",
-                      label: "Night Owl",
-                      desc: "Evening routines and late sessions",
-                      icon: "🌙",
-                      color: "from-indigo-400 to-purple-400",
-                    },
-                    {
-                      value: "flexible",
-                      label: "Flexible",
-                      desc: "Anytime that fits my life",
-                      icon: "🔄",
-                      color: "from-teal-400 to-cyan-400",
-                    },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className={`relative overflow-hidden rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        data.schedule === option.value
-                          ? "border-transparent shadow-xl bg-gradient-to-r " +
-                            option.color +
-                            " bg-opacity-10"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
-                      onClick={() => updateData({ schedule: option.value })}
-                    >
-                      <div className='flex items-center gap-4'>
-                        <div
-                          className={`text-2xl p-2 rounded-lg bg-gradient-to-r ${option.color} bg-opacity-20`}
-                        >
-                          {option.icon}
-                        </div>
-                        <div className='flex-1'>
-                          <div className='font-semibold text-gray-800'>
-                            {option.label}
+                
+                <div className="space-y-3">
+                  {schedules.map((schedule) => {
+                    const isSelected = data.schedule === schedule.id;
+                    const Icon = schedule.icon;
+                    
+                    return (
+                      <Card
+                        key={schedule.id}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          isSelected 
+                            ? 'ring-2 ring-primary bg-primary/5' 
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => updateData({ schedule: schedule.id })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${schedule.gradient}`}>
+                              <Icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{schedule.label}</h4>
+                              <p className="text-muted-foreground">{schedule.description}</p>
+                            </div>
                           </div>
-                          <div className='text-sm text-gray-500'>
-                            {option.desc}
-                          </div>
-                        </div>
-                        {data.schedule === option.value && (
-                          <div
-                            className={`w-6 h-6 rounded-full bg-gradient-to-r ${option.color} flex items-center justify-center`}
-                          >
-                            <span className='text-white text-xs font-bold'>
-                              ✓
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -945,34 +926,39 @@ export default function OnboardingWizard() {
 
       case 5:
         return (
-          <div className='space-y-8 py-8'>
-            <div className='text-center space-y-3'>
-              <div className='relative'>
-                <Heart className='w-12 h-12 text-rose-500 mx-auto' />
-                <div className='absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse'></div>
-              </div>
-              <h2 className='text-3xl font-bold bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent'>
-                Your Why
+          <div className="space-y-8">
+            <div className="text-center space-y-6">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Setup Your Magnificent Journey
               </h2>
-              <p className='text-gray-500 max-w-md mx-auto'>
-                What ignites your passion? Your 'why' will be your North Star on
-                challenging days.
-              </p>
+              <p className="text-muted-foreground text-base">Step 5 of 5</p>
+              
+              <div className="py-8">
+                <Heart className="h-16 w-16 text-red-500 mx-auto mb-6" />
+                <h3 className="text-3xl font-bold text-red-500 mb-4">Your Why</h3>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  What ignites your passion? Your 'why' will be your North Star on challenging days.
+                </p>
+              </div>
             </div>
-            <div className='space-y-4'>
-              <div className='bg-gradient-to-br from-rose-50 via-orange-50 to-yellow-50 rounded-2xl p-8 border border-rose-100'>
-                <textarea
-                  placeholder='Share your story... What drives you? What would achieving this goal mean to you? How will it transform your life? Paint us a picture of your success!'
+
+            <Card className="bg-muted/30">
+              <CardContent className="p-6">
+                <Textarea
+                  placeholder="Share your story... What drives you? What would achieving this goal mean to you? How will it transform your life? Paint us a picture of your success!"
                   value={data.motivation}
                   onChange={(e) => updateData({ motivation: e.target.value })}
-                  className='w-full min-h-[150px] bg-transparent border-none outline-none resize-none text-lg placeholder-gray-400 font-medium leading-relaxed'
+                  className="min-h-[200px] text-base leading-relaxed border-0 bg-transparent resize-none"
                 />
-              </div>
-              <div className='flex items-center gap-2 text-sm text-gray-400 justify-center'>
-                <Sparkles className='w-4 h-4' />
-                <span>Your story inspires us and fuels your journey</span>
-                <Heart className='w-4 h-4 text-rose-400' />
-              </div>
+              </CardContent>
+            </Card>
+
+            <div className="text-center py-4">
+              <p className="text-muted-foreground flex items-center justify-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Your story inspires us and fuels your journey
+                <Heart className="h-4 w-4 text-red-500" />
+              </p>
             </div>
           </div>
         );
@@ -982,109 +968,62 @@ export default function OnboardingWizard() {
     }
   };
 
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return true; // Always true for welcome screen
-      case 2:
-        return (
-          data.focusAreas.length > 0 || data.customFocusArea.trim().length > 0
-        );
-      case 3:
-        return data.experienceLevel && data.timeCommitment;
-      case 4:
-        return data.learningStyle && data.schedule;
-      case 5:
-        return data.motivation.trim().length > 0;
-      default:
-        return false;
-    }
-  };
-
   return (
-    <div className='min-h-screen bg-gradient-to-br from-violet-100 via-pink-50 to-cyan-100 flex items-center justify-center p-4 relative overflow-hidden'>
-      {/* Animated background elements */}
-      <div className='absolute inset-0'>
-        <div className='absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-violet-300 to-pink-300 rounded-full blur-3xl opacity-20 animate-pulse'></div>
-        <div className='absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-full blur-3xl opacity-20 animate-pulse delay-1000'></div>
-        <div className='absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-full blur-2xl opacity-15 animate-pulse delay-500'></div>
-      </div>
-
-      <Card className='w-full max-w-4xl bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 relative z-10 overflow-hidden'>
-        {/* Progress bar background */}
-        <div className='absolute top-0 left-0 right-0 h-1 bg-gray-100'>
-          <div
-            className='h-full bg-gradient-to-r from-violet-500 via-pink-500 to-cyan-500 transition-all duration-500 ease-out'
-            style={{ width: `${progress}%` }}
-          ></div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-muted-foreground">
+              Step {currentStep} of {totalSteps}
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {Math.round(progress)}% Complete
+            </span>
+          </div>
+          <Progress value={progress} className="h-2" />
         </div>
 
-        <CardHeader className='text-center pb-4 pt-8'>
-          <div className='flex flex-col items-center justify-center space-y-4'>
-            <CardTitle className='text-2xl md:text-3xl font-black bg-gradient-to-r from-violet-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent'>
-              Setup Your Magnificent Journey
-            </CardTitle>
-            <div className='flex items-center gap-4'>
-              <span className='text-sm font-medium text-gray-600'>
-                Step {currentStep} of {totalSteps}
-              </span>
-              <div className='flex gap-1'>
-                {Array.from({ length: totalSteps }, (_, i) => (
-                  <div
-                    key={i}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      i < currentStep
-                        ? "bg-gradient-to-r from-violet-500 to-pink-500"
-                        : "bg-gray-300"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className='space-y-8 p-6 md:p-10 min-h-[600px]'>
-          <div className='transition-all duration-500 ease-in-out'>
+        {/* Main Content */}
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardContent className="p-8">
             {renderStep()}
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className='flex justify-between items-center pt-8 border-t border-gray-100'>
+        {/* Navigation */}
+        <div className="flex justify-between mt-8">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Previous
+          </Button>
+
+          {currentStep === totalSteps ? (
             <Button
-              variant='outline'
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className='group border-2 border-gray-200 text-gray-600 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 px-6 py-3 rounded-2xl font-medium'
+              onClick={handleComplete}
+              disabled={!canProceedToNext()}
+              className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
             >
-              <ArrowLeft className='h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200' />
-              Previous
+              Create My Dashboard!
+              <Sparkles className="h-4 w-4" />
             </Button>
-
-            {currentStep < totalSteps ? (
-              <Button
-                onClick={handleNext}
-                disabled={!canProceed()}
-                className='group bg-gradient-to-r from-violet-500 via-pink-500 to-cyan-500 hover:from-violet-600 hover:via-pink-600 hover:to-cyan-600 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 px-8 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:hover:scale-100'
-              >
-                Next
-                <ArrowRight className='h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200' />
-              </Button>
-            ) : (
-              <Button
-                onClick={generatePersonalizedContent}
-                disabled={!canProceed()}
-                className='group bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 hover:from-emerald-600 hover:via-cyan-600 hover:to-blue-600 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 px-8 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl disabled:shadow-none transform hover:scale-105 disabled:hover:scale-100 relative overflow-hidden'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
-                <span className='relative flex items-center'>
-                  Create My Dashboard
-                  <Sparkles className='h-4 w-4 ml-2 group-hover:rotate-12 transition-transform duration-200' />
-                </span>
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          ) : (
+            <Button
+              onClick={handleNext}
+              disabled={!canProceedToNext()}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              Next
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

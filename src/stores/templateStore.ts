@@ -129,11 +129,12 @@ export const useTemplateStore = create<TemplateState>()(
       
       updateTemplate: (userId: string, templateId: string, updates) => {
         set(state => ({
+          ...state,
           templates: {
             ...state.templates,
             [userId]: (state.templates[userId] || []).map(template =>
               template.id === templateId
-                ? { ...template, ...updates, updatedAt: new Date().toISOString() }
+                ? { ...template, ...updates, updatedAt: new Date().toISOString() } as AnyTemplate
                 : template
             )
           }

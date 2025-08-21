@@ -157,15 +157,13 @@ export const useHabitStore = create<HabitState>()(
             updateAchievementProgress(
               userId,
               achievement.id,
-              achievement.requirement,
               achievement.requirement
             );
           } else {
             updateAchievementProgress(
               userId,
               achievement.id,
-              streak,
-              achievement.requirement
+              streak
             );
           }
         });

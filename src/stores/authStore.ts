@@ -5,7 +5,7 @@ interface User {
   id: string;
   username: string;
   email: string;
-  password: string; // <-- Add this line
+  password?: string; // Optional since we don't store it in app state
   level: number;
   xp: number;
   totalXp: number;
@@ -91,10 +91,11 @@ export const useAuthStore = create<AuthState>()(
 
         users.push(newUser);
         localStorage.setItem("habit_app_users", JSON.stringify(users));
+        const { password: _, ...userWithoutPassword } = newUser;
         set({
-          user: { ...newUser, password: undefined },
+          user: userWithoutPassword,
           isAuthenticated: true,
-        }); // <-- set user and authenticated
+        });
         return { success: true };
       },
 
