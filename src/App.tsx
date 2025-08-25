@@ -16,7 +16,7 @@ import { DayMastery } from "./components/DayMastery";
 import { ProgressReport } from "./components/ProgressReport";
 import { Settings } from "./components/Settings";
 import { VisionBoard } from "./components/VisionBoard";
-import { Journal } from "./components/Journal";
+import { JournalByDate } from "./components/JournalByDate";
 import { AchievementTracker } from "./components/AchievementTracker";
 import OnboardingWizard from "./components/OnboardingWizard";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -46,6 +46,19 @@ const App = () => (
             <Route path='/dashboard/journal' element={<Dashboard activeTab="journal" />} />
             <Route path='/dashboard/progress' element={<Dashboard activeTab="progress" />} />
             <Route path='/dashboard/settings' element={<Dashboard activeTab="settings" />} />
+            {/* Direct routes for dashboard tabs */}
+            <Route path='/habits' element={<Dashboard activeTab="habits" />} />
+            <Route path='/focus' element={<Dashboard activeTab="focus" />} />
+            <Route path='/tasks' element={<Dashboard activeTab="tasks" />} />
+            <Route path='/xp' element={<Dashboard activeTab="xp" />} />
+            <Route path='/rewards' element={<Dashboard activeTab="rewards" />} />
+            <Route path='/achievements' element={<Dashboard activeTab="achievements" />} />
+            <Route path='/tracker' element={<Dashboard activeTab="tracker" />} />
+            <Route path='/mastery' element={<Dashboard activeTab="mastery" />} />
+            <Route path='/vision' element={<Dashboard activeTab="vision" />} />
+            <Route path='/journal' element={<Dashboard activeTab="journal" />} />
+            <Route path='/progress' element={<Dashboard activeTab="progress" />} />
+            <Route path='/settings' element={<Dashboard activeTab="settings" />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path='*' element={<NotFound />} />
           </Routes>
