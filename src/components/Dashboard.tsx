@@ -60,7 +60,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
     
     if (initialActiveTab) {
       setActiveTab(initialActiveTab);
-    } else if (tabFromUrl && tabFromUrl !== 'dashboard') {
+    } else if (tabFromUrl && tabFromUrl !== '') {
       setActiveTab(tabFromUrl);
     }
   }, [location.pathname, initialActiveTab]);
@@ -72,7 +72,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    navigate(`/dashboard/${tabId}`);
+    navigate(`/${tabId}`);
   };
 
   const toggleTabVisibility = (tabId: string) => {
@@ -109,7 +109,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
     },
     {
       id: "tracker",
-      label: "Activity Tracker",
+      label: "Achievement Tracker",
       icon: TrendingUp,
       component: AchievementTracker,
     },
@@ -168,105 +168,106 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
             </CardHeader>
             <CardContent>
               <div className='space-y-4'>
-                <p className='text-gray-600'>
-                  Choose which sections you want to see in your dashboard. You can always change this later.
-                </p>
+                <div className='flex items-center justify-between'>
+                  <p className='text-gray-600'>
+                    Show or hide dashboard sections to create your perfect workspace.
+                  </p>
+                  <Button
+                    onClick={resetToDefaults}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Reset to Defaults
+                  </Button>
+                </div>
+                
                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'>
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     const isVisible = visibleTabs.includes(tab.id);
+                    
                     return (
-                      <button
+                      <div
                         key={tab.id}
-                        onClick={() => toggleTabVisibility(tab.id)}
-                        className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all ${
-                          isVisible
-                            ? "border-purple-500 bg-purple-50 text-purple-700"
-                            : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                        className={`p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                          isVisible 
+                            ? 'border-purple-200 bg-purple-50' 
+                            : 'border-gray-200 bg-gray-50'
                         }`}
+                        onClick={() => toggleTabVisibility(tab.id)}
                       >
-                        <Icon className='h-4 w-4' />
-                        <span className='text-sm font-medium'>{tab.label}</span>
-                        {isVisible ? (
-                          <Eye className='h-4 w-4 ml-auto' />
-                        ) : (
-                          <EyeOff className='h-4 w-4 ml-auto opacity-50' />
-                        )}
-                      </button>
+                        <div className='flex items-center gap-2'>
+                          {isVisible ? (
+                            <Eye className='h-4 w-4 text-purple-600' />
+                          ) : (
+                            <EyeOff className='h-4 w-4 text-gray-400' />
+                          )}
+                          <Icon className={`h-4 w-4 ${isVisible ? 'text-purple-600' : 'text-gray-400'}`} />
+                          <span className={`text-sm font-medium ${isVisible ? 'text-purple-900' : 'text-gray-500'}`}>
+                            {tab.label}
+                          </span>
+                        </div>
+                      </div>
                     );
                   })}
-                </div>
-                <div className='flex gap-2 pt-4 border-t'>
-                  <Button onClick={resetToDefaults} variant="outline" size="sm">
-                    Reset to Defaults
-                  </Button>
-                  <Button 
-                    onClick={() => setVisibleTabs([])} 
-                    variant="outline" 
-                    size="sm"
-                  >
-                    Hide All
-                  </Button>
-                  <Button 
-                    onClick={() => setVisibleTabs(tabs.map(t => t.id))} 
-                    variant="outline" 
-                    size="sm"
-                  >
-                    Show All
-                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Mobile Tab Navigation */}
-        <div className='md:hidden mb-6'>
-          <div className='flex overflow-x-auto space-x-2 pb-2'>
-            {visibleTabsData.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
-                    activeTab === tab.id
-                      ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                      : "bg-white/70 text-gray-600 hover:bg-white hover:shadow-md"
-                  }`}
-                >
-                  <Icon className='h-4 w-4' />
-                  {tab.label}
-                </button>
-              );
-            })}
+        {/* Main Dashboard Content */}
+        <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+          {/* Sidebar Navigation */}
+          <div className='lg:col-span-3'>
+            <Card className='sticky top-6'>
+              <CardContent className='p-0'>
+                <div className='p-4 border-b'>
+                  <div className='flex items-center justify-between mb-3'>
+                    <h3 className='font-semibold text-gray-800'>Navigation</h3>
+                    <span className='text-xs text-gray-500'>
+                      {visibleTabsData.length} sections
+                    </span>
+                  </div>
+                  {visibleTabsData.map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                          activeTab === tab.id
+                            ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        <Icon className='h-5 w-5' />
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
 
-        <div className='flex gap-6'>
-          {/* Desktop Sidebar */}
-          <div className='hidden md:block w-64 space-y-2'>
-            <div className='bg-white/70 backdrop-blur-sm rounded-xl p-4 shadow-lg'>
-              <div className='flex items-center justify-between mb-3'>
-                <h3 className='font-semibold text-gray-800'>Navigation</h3>
-                <span className='text-xs text-gray-500'>
-                  {visibleTabsData.length} sections
-                </span>
-              </div>
-              {visibleTabsData.map((tab) => {
+          {/* Mobile Tab Bar */}
+          <div className='lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 z-50'>
+            <div className='flex overflow-x-auto gap-1 pb-2'>
+              {visibleTabsData.slice(0, 6).map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                    className={`flex flex-col items-center min-w-[60px] p-2 rounded-lg transition-all ${
                       activeTab === tab.id
-                        ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                        : "text-gray-600 hover:bg-gray-100"
+                        ? "bg-purple-100 text-purple-600"
+                        : "text-gray-500 hover:bg-gray-100"
                     }`}
                   >
                     <Icon className='h-5 w-5' />
-                    {tab.label}
+                    <span className='text-xs mt-1 truncate'>{tab.label}</span>
                   </button>
                 );
               })}
@@ -274,7 +275,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
           </div>
 
           {/* Main Content */}
-          <div className='flex-1'>
+          <div className='lg:col-span-9'>
             {visibleTabs.includes(activeTab) ? (
               <ActiveComponent />
             ) : (
@@ -286,7 +287,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
                       Section Hidden
                     </h3>
                     <p className='text-gray-600'>
-                      This section is currently hidden from your dashboard. 
+                      This dashboard section is currently hidden. 
                       You can enable it in the customization panel.
                     </p>
                     <Button 
