@@ -74,6 +74,13 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Learning theme colors */
+    --learning-bg: 240 100% 97%;
+    --learning-secondary: 240 60% 94%;
+    --learning-border: 240 20% 85%;
+    --learning-primary: 217 91% 60%;
+    --learning-text: 240 10% 60%;
   }
 
   .dark {
@@ -129,7 +136,12 @@ All colors MUST be HSL.
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Learning theme colors - dark mode */
+    --learning-bg: 210 40% 8%;
+    --learning-secondary: 215 27% 12%;
+    --learning-border: 215 15% 20%;
+    --learning-primary: 217 91% 60%;
+    --learning-text: 215 10% 70%;
   }
 }
 

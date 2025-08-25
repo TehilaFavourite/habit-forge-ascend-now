@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -9,19 +9,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, RotateCcw, Clock, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, RotateCcw, Clock, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAchievementTracker } from "@/stores/achievementTracker";
-
-type TimerMode = "work" | "shortBreak" | "longBreak";
+import { usePomodoroStore, type TimerMode } from "@/stores/pomodoroStore";
 
 const FOCUS_SOUNDS = [
   { name: "None", value: "none", icon: "🔇" },
@@ -82,21 +74,37 @@ const FOCUS_SOUNDS = [
 ];
 
 export const PomodoroTimer = () => {
-  const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
-  const [mode, setMode] = useState<TimerMode>("work");
-  const [session, setSession] = useState(1);
-  const [completedSessions, setCompletedSessions] = useState(0);
-  const [workDuration, setWorkDuration] = useState(25);
-  const [shortBreakDuration, setShortBreakDuration] = useState(5);
-  const [longBreakDuration, setLongBreakDuration] = useState(15);
-  const [sessionsUntilLongBreak, setSessionsUntilLongBreak] = useState(4);
-  const [tickingEnabled, setTickingEnabled] = useState(false);
-
-  // Focus Sound State
-  const [selectedSound, setSelectedSound] = useState("none");
-  const [soundPlaying, setSoundPlaying] = useState(false);
-  const [soundVolume, setSoundVolume] = useState([50]);
+  const {
+    isRunning,
+    timeLeft,
+    mode,
+    session,
+    completedSessions,
+    workDuration,
+    shortBreakDuration,
+    longBreakDuration,
+    sessionsUntilLongBreak,
+    tickingEnabled,
+    selectedSound,
+    soundPlaying,
+    soundVolume,
+    setIsRunning,
+    setTimeLeft,
+    setMode,
+    setWorkDuration,
+    setShortBreakDuration,
+    setLongBreakDuration,
+    setSessionsUntilLongBreak,
+    setTickingEnabled,
+    setSelectedSound,
+    setSoundPlaying,
+    setSoundVolume,
+    getDurationForMode,
+    resetTimer,
+    pauseTimer,
+    startTimer,
+    completeSession,
+  } = usePomodoroStore();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -110,39 +118,30 @@ export const PomodoroTimer = () => {
       .padStart(2, "0")}`;
   };
 
-  const getDurationForMode = (currentMode: TimerMode) => {
-    switch (currentMode) {
-      case "work":
-        return workDuration * 60;
-      case "shortBreak":
-        return shortBreakDuration * 60;
-      case "longBreak":
-        return longBreakDuration * 60;
-      default:
-        return 25 * 60;
-    }
-  };
-
   const playTickSound = () => {
     if (!tickingEnabled) return;
 
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    try {
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
 
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      audioContext.currentTime + 0.1
-    );
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1
+      );
 
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+      console.log("Tick sound not available");
+    }
   };
 
   const handleSoundSelect = (soundValue: string) => {
@@ -157,30 +156,34 @@ export const PomodoroTimer = () => {
       }
     } else {
       setSelectedSound(soundValue);
-      setSoundPlaying(true);
-      setTimeout(() => {
-        audioRef.current?.play();
-      }, 50);
+      if (soundValue !== "none") {
+        setSoundPlaying(true);
+        setTimeout(() => {
+          audioRef.current?.play();
+        }, 50);
+      } else {
+        setSoundPlaying(false);
+      }
     }
   };
 
   const handleSoundVolume = (value: number[]) => {
-    setSoundVolume(value);
+    setSoundVolume(value[0]);
     if (audioRef.current) {
       audioRef.current.volume = value[0] / 100;
     }
   };
 
-  const startTimer = () => {
-    if (!isRunning) {
-      setIsRunning(true);
+  const handleStartTimer = () => {
+    startTimer();
+    if (!intervalRef.current) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             handleTimerComplete();
-            return getDurationForMode(mode);
+            return prev;
           }
-          if (tickingEnabled && prev % 60 === 0) {
+          if (tickingEnabled) {
             playTickSound();
           }
           return prev - 1;
@@ -189,46 +192,67 @@ export const PomodoroTimer = () => {
     }
   };
 
-  const pauseTimer = () => {
-    if (isRunning) {
-      setIsRunning(false);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+  const handlePauseTimer = () => {
+    pauseTimer();
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
   };
 
-  const resetTimer = () => {
-    setIsRunning(false);
+  const handleResetTimer = () => {
+    resetTimer();
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-    setTimeLeft(getDurationForMode(mode));
   };
 
   const handleTimerComplete = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
     if (mode === "work") {
-      setCompletedSessions((prev) => prev + 1);
-      const nextMode =
-        session % sessionsUntilLongBreak === 0 ? "longBreak" : "shortBreak";
-      setMode(nextMode);
-      setTimeLeft(getDurationForMode(nextMode));
+      completeSession();
       toast.success("🎉 Work session completed! Time for a break.");
-
-      // Track focus session for achievements
       tracker.trackFocusSession();
     } else {
-      setMode("work");
-      setSession((prev) => prev + 1);
-      setTimeLeft(getDurationForMode("work"));
+      completeSession();
       toast.success("Break time over! Ready for another focused session?");
     }
   };
 
+  // Start timer when running state changes
+  useEffect(() => {
+    if (isRunning && !intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            handleTimerComplete();
+            return getDurationForMode(mode);
+          }
+          if (tickingEnabled) {
+            playTickSound();
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (!isRunning && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isRunning, mode, tickingEnabled]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -240,16 +264,10 @@ export const PomodoroTimer = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isRunning) {
-      setTimeLeft(getDurationForMode(mode));
-    }
-  }, [mode, workDuration, shortBreakDuration, longBreakDuration, isRunning]);
-
   // Update volume when slider changes
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = soundVolume[0] / 100;
+      audioRef.current.volume = soundVolume / 100;
     }
   }, [soundVolume]);
 
@@ -306,7 +324,7 @@ export const PomodoroTimer = () => {
             {/* Controls */}
             <div className='flex justify-center gap-4'>
               <Button
-                onClick={isRunning ? pauseTimer : startTimer}
+                onClick={isRunning ? handlePauseTimer : handleStartTimer}
                 className='bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600'
                 size='lg'
               >
@@ -318,7 +336,7 @@ export const PomodoroTimer = () => {
                 {isRunning ? "Pause" : "Start"}
               </Button>
 
-              <Button onClick={resetTimer} variant='outline' size='lg'>
+              <Button onClick={handleResetTimer} variant='outline' size='lg'>
                 <RotateCcw className='mr-2 h-5 w-5' />
                 Reset
               </Button>
@@ -477,11 +495,11 @@ export const PomodoroTimer = () => {
                   <div className='flex items-center justify-between'>
                     <Label>Volume</Label>
                     <span className='text-sm text-gray-500'>
-                      {soundVolume[0]}%
+                      {soundVolume}%
                     </span>
                   </div>
                   <Slider
-                    value={soundVolume}
+                    value={[soundVolume]}
                     onValueChange={handleSoundVolume}
                     max={100}
                     step={1}
@@ -510,14 +528,16 @@ export const PomodoroTimer = () => {
       </div>
 
       {/* Hidden Audio Element */}
-      <audio
-        ref={audioRef}
-        src={currentSound?.url}
-        loop
-        onPlay={() => setSoundPlaying(true)}
-        onPause={() => setSoundPlaying(false)}
-        style={{ display: "none" }}
-      />
+      {selectedSound !== "none" && (
+        <audio
+          ref={audioRef}
+          src={currentSound?.url}
+          loop
+          onPlay={() => setSoundPlaying(true)}
+          onPause={() => setSoundPlaying(false)}
+          style={{ display: "none" }}
+        />
+      )}
     </div>
   );
 };
