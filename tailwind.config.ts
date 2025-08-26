@@ -69,7 +69,27 @@ export default {
 				'learning-secondary': 'hsl(var(--learning-secondary))',
 				'learning-border': 'hsl(var(--learning-border))',
 				'learning-primary': 'hsl(var(--learning-primary))',
-				'learning-text': 'hsl(var(--learning-text))'
+				'learning-text': 'hsl(var(--learning-text))',
+				
+				'gratitude-bg': 'hsl(var(--gratitude-bg))',
+				'gratitude-secondary': 'hsl(var(--gratitude-secondary))',
+				'gratitude-border': 'hsl(var(--gratitude-border))',
+				'gratitude-primary': 'hsl(var(--gratitude-primary))',
+				
+				'reflection-bg': 'hsl(var(--reflection-bg))',
+				'reflection-secondary': 'hsl(var(--reflection-secondary))',
+				'reflection-border': 'hsl(var(--reflection-border))',
+				'reflection-primary': 'hsl(var(--reflection-primary))',
+				
+				'affirmation-bg': 'hsl(var(--affirmation-bg))',
+				'affirmation-secondary': 'hsl(var(--affirmation-secondary))',
+				'affirmation-border': 'hsl(var(--affirmation-border))',
+				'affirmation-primary': 'hsl(var(--affirmation-primary))',
+
+				'onboarding-bg': 'hsl(var(--onboarding-bg))',
+				'onboarding-secondary': 'hsl(var(--onboarding-secondary))',
+				'onboarding-border': 'hsl(var(--onboarding-border))',
+				'onboarding-text': 'hsl(var(--onboarding-text))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

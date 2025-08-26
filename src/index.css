@@ -81,6 +81,28 @@ All colors MUST be HSL.
     --learning-border: 240 20% 85%;
     --learning-primary: 217 91% 60%;
     --learning-text: 240 10% 60%;
+
+    /* Journal theme colors */
+    --gratitude-bg: 340 100% 97%;
+    --gratitude-secondary: 340 60% 94%;
+    --gratitude-border: 340 30% 85%;
+    --gratitude-primary: 340 70% 60%;
+    
+    --reflection-bg: 200 100% 97%;
+    --reflection-secondary: 200 60% 94%;
+    --reflection-border: 200 30% 85%;
+    --reflection-primary: 200 70% 60%;
+    
+    --affirmation-bg: 120 100% 97%;
+    --affirmation-secondary: 120 60% 94%;
+    --affirmation-border: 120 30% 85%;
+    --affirmation-primary: 120 70% 60%;
+
+    /* Onboarding colors */
+    --onboarding-bg: 220 100% 97%;
+    --onboarding-secondary: 220 60% 94%;
+    --onboarding-border: 220 30% 85%;
+    --onboarding-text: 220 10% 20%;
   }
 
   .dark {
@@ -142,6 +164,28 @@ All colors MUST be HSL.
     --learning-border: 215 15% 20%;
     --learning-primary: 217 91% 60%;
     --learning-text: 215 10% 70%;
+
+    /* Journal theme colors - dark mode */
+    --gratitude-bg: 340 40% 8%;
+    --gratitude-secondary: 340 27% 12%;
+    --gratitude-border: 340 15% 20%;
+    --gratitude-primary: 340 70% 60%;
+    
+    --reflection-bg: 200 40% 8%;
+    --reflection-secondary: 200 27% 12%;
+    --reflection-border: 200 15% 20%;
+    --reflection-primary: 200 70% 60%;
+    
+    --affirmation-bg: 120 40% 8%;
+    --affirmation-secondary: 120 27% 12%;
+    --affirmation-border: 120 15% 20%;
+    --affirmation-primary: 120 70% 60%;
+
+    /* Onboarding colors - dark mode */
+    --onboarding-bg: 220 40% 8%;
+    --onboarding-secondary: 220 27% 12%;
+    --onboarding-border: 220 15% 20%;
+    --onboarding-text: 220 10% 80%;
   }
 }
 

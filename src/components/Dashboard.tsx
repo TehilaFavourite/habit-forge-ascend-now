@@ -10,9 +10,12 @@ import { DayMastery } from "@/components/DayMastery";
 import { ProgressReport } from "@/components/ProgressReport";
 import { Settings } from "@/components/Settings";
 import { VisionBoard } from "@/components/VisionBoard";
-import { JournalByDate } from "@/components/JournalByDate";
+import { Journal } from "@/components/Journal";
 import { AchievementTracker } from "@/components/AchievementTracker";
 import { useAuthStore } from "@/stores/authStore";
+import { useHabitStore } from "@/stores/habitStore";
+import { useTodoStore } from "@/stores/todoStore";
+import { useXPStore } from "@/stores/xpStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +47,10 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(initialActiveTab || "habits");
+  
+  const { checkAndResetDaily: resetHabits } = useHabitStore();
+  const { checkAndResetDaily: resetTodos } = useTodoStore();
+  const { checkAndResetDaily: resetXP } = useXPStore();
   const [customizationMode, setCustomizationMode] = useState(false);
   const [visibleTabs, setVisibleTabs] = useState<string[]>(() => {
     const saved = localStorage.getItem('dashboard-visible-tabs');
@@ -69,6 +76,13 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
   useEffect(() => {
     localStorage.setItem('dashboard-visible-tabs', JSON.stringify(visibleTabs));
   }, [visibleTabs]);
+
+  // Check for daily reset
+  useEffect(() => {
+    resetHabits();
+    resetTodos();
+    resetXP();
+  }, [resetHabits, resetTodos, resetXP]);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
@@ -121,7 +135,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
       icon: Sparkles,
       component: VisionBoard,
     },
-    { id: "journal", label: "Journal", icon: BookOpen, component: JournalByDate },
+    { id: "journal", label: "Journal", icon: BookOpen, component: Journal },
     {
       id: "progress",
       label: "Progress",
