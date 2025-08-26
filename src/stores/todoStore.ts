@@ -16,6 +16,8 @@ export interface Todo {
 
 interface TodoState {
   todos: Todo[];
+  lastResetDate: string;
+  checkAndResetDaily: () => void;
   addTodo: (
     todo: Omit<Todo, "id" | "completed" | "createdAt" | "completedAt">
   ) => void;
@@ -35,6 +37,23 @@ export const useTodoStore = create<TodoState>()(
   persist(
     (set, get) => ({
       todos: [],
+      lastResetDate: new Date().toDateString(),
+
+      checkAndResetDaily: () => {
+        const today = new Date().toDateString();
+        const state = get();
+        if (state.lastResetDate !== today) {
+          // Reset all todos for daily recurrence
+          set(state => ({
+            todos: state.todos.map(todo => ({
+              ...todo,
+              completed: false,
+              completedAt: undefined,
+            })),
+            lastResetDate: today,
+          }));
+        }
+      },
 
       addTodo: (todoData) => {
         const newTodo: Todo = {

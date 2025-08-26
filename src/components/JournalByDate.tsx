@@ -53,7 +53,7 @@ export const JournalByDate = () => {
   const [newEntry, setNewEntry] = useState({
     title: "",
     content: "",
-    type: "reflection" as "reflection" | "gratitude" | "learning" | "goals" | "insights",
+    type: "reflection" as "reflection" | "gratitude" | "learning" | "affirmation",
     mood: 3,
   });
 
@@ -102,6 +102,7 @@ export const JournalByDate = () => {
       mood: newEntry.mood,
       tags: [],
       userId: user.id,
+      type: newEntry.type,
     });
 
     setNewEntry({

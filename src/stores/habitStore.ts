@@ -20,6 +20,8 @@ export interface Habit {
 
 interface HabitState {
   habits: Habit[];
+  lastResetDate: string;
+  checkAndResetDaily: () => void;
   addHabit: (
     habit: Omit<
       Habit,
@@ -49,6 +51,19 @@ export const useHabitStore = create<HabitState>()(
   persist(
     (set, get) => ({
       habits: [],
+      lastResetDate: new Date().toDateString(),
+
+      // Check and reset daily progress at midnight
+      checkAndResetDaily: () => {
+        const today = new Date().toDateString();
+        const state = get();
+        if (state.lastResetDate !== today) {
+          // Reset daily progress but keep streaks
+          set({
+            lastResetDate: today,
+          });
+        }
+      },
 
       addHabit: (habitData) => {
         const newHabit: Habit = {

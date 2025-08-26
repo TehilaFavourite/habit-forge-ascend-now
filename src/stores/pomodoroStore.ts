@@ -22,6 +22,9 @@ interface PomodoroState {
   selectedSound: string;
   soundPlaying: boolean;
   soundVolume: number;
+  audioContext: AudioContext | null;
+  oscillator: OscillatorNode | null;
+  gainNode: GainNode | null;
   
   // Actions
   setIsRunning: (running: boolean) => void;
@@ -44,6 +47,8 @@ interface PomodoroState {
   pauseTimer: () => void;
   startTimer: () => void;
   completeSession: () => void;
+  startTicking: () => void;
+  stopTicking: () => void;
 }
 
 export const usePomodoroStore = create<PomodoroState>()(
@@ -63,9 +68,19 @@ export const usePomodoroStore = create<PomodoroState>()(
       selectedSound: "none",
       soundPlaying: false,
       soundVolume: 50,
+      audioContext: null,
+      oscillator: null,
+      gainNode: null,
       
       // Setters
-      setIsRunning: (running) => set({ isRunning: running }),
+      setIsRunning: (running) => {
+        set({ isRunning: running });
+        if (running && get().tickingEnabled) {
+          get().startTicking();
+        } else {
+          get().stopTicking();
+        }
+      },
       setTimeLeft: (time) => {
         if (typeof time === 'function') {
           set(state => ({ timeLeft: time(state.timeLeft) }));
@@ -80,7 +95,14 @@ export const usePomodoroStore = create<PomodoroState>()(
       setShortBreakDuration: (duration) => set({ shortBreakDuration: duration }),
       setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
       setSessionsUntilLongBreak: (sessions) => set({ sessionsUntilLongBreak: sessions }),
-      setTickingEnabled: (enabled) => set({ tickingEnabled: enabled }),
+      setTickingEnabled: (enabled) => {
+        set({ tickingEnabled: enabled });
+        if (enabled && get().isRunning) {
+          get().startTicking();
+        } else {
+          get().stopTicking();
+        }
+      },
       setSelectedSound: (sound) => set({ selectedSound: sound }),
       setSoundPlaying: (playing) => set({ soundPlaying: playing }),
       setSoundVolume: (volume) => set({ soundVolume: volume }),
@@ -138,7 +160,50 @@ export const usePomodoroStore = create<PomodoroState>()(
           timeLeft: duration,
           isRunning: false
         });
-      }
+      },
+
+      startTicking: () => {
+        const state = get();
+        if (state.audioContext && state.oscillator) return; // Already running
+
+        try {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          oscillator.type = 'sine';
+          gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+
+          oscillator.start();
+
+          set({ audioContext, oscillator, gainNode });
+        } catch (error) {
+          console.warn('Audio not supported:', error);
+        }
+      },
+
+      stopTicking: () => {
+        const { audioContext, oscillator } = get();
+        if (oscillator) {
+          try {
+            oscillator.stop();
+          } catch (e) {
+            // Oscillator may already be stopped
+          }
+        }
+        if (audioContext) {
+          try {
+            audioContext.close();
+          } catch (e) {
+            // Context may already be closed
+          }
+        }
+        set({ audioContext: null, oscillator: null, gainNode: null });
+      },
     }),
     {
       name: 'pomodoro-storage',

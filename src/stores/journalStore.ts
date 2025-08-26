@@ -11,6 +11,16 @@ export interface JournalEntry {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  type: 'gratitude' | 'reflection' | 'affirmation' | 'learning';
+  learningItems?: LearningItem[];
+}
+
+export interface LearningItem {
+  id: string;
+  content: string;
+  category: string;
+  isFlashcard: boolean;
+  createdAt: string;
 }
 
 export interface JournalPrompt {
@@ -108,6 +118,7 @@ export const useJournalStore = create<JournalState>()(
           ...entry,
           id: `journal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           userId,
+          type: 'reflection' as const,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }));

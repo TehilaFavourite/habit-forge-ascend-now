@@ -25,6 +25,8 @@ export interface DailyXPCompletion {
 interface XPState {
   activities: XPActivity[];
   completions: DailyXPCompletion[];
+  lastResetDate: string;
+  checkAndResetDaily: () => void;
   addActivity: (activity: Omit<XPActivity, 'id' | 'createdAt'>) => void;
   updateActivity: (id: string, updates: Partial<XPActivity>) => void;
   deleteActivity: (id: string) => void;
@@ -42,6 +44,19 @@ export const useXPStore = create<XPState>()(
     (set, get) => ({
       activities: [],
       completions: [],
+      lastResetDate: new Date().toDateString(),
+
+      checkAndResetDaily: () => {
+        const today = new Date().toDateString();
+        const state = get();
+        if (state.lastResetDate !== today) {
+          // Reset daily completions but keep activities
+          const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          set({
+            lastResetDate: today,
+          });
+        }
+      },
       
       addActivity: (activityData) => {
         const newActivity: XPActivity = {
