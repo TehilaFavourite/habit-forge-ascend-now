@@ -99,12 +99,18 @@ export default {
 			backgroundImage: {
 				'gradient-calm': 'var(--gradient-calm)',
 				'gradient-soothing': 'var(--gradient-soothing)',
-				'gradient-welcome': 'var(--gradient-welcome)'
+				'gradient-welcome': 'var(--gradient-welcome)',
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-subtle': 'var(--gradient-subtle)',
+				'gradient-work': 'var(--gradient-work)',
+				'gradient-break': 'var(--gradient-break)',
 			},
 			boxShadow: {
 				'calm': 'var(--shadow-calm)',
 				'gentle': 'var(--shadow-gentle)',
-				'welcome': 'var(--shadow-welcome)'
+				'welcome': 'var(--shadow-welcome)',
+				'elegant': 'var(--shadow-elegant)',
+				'glow': 'var(--shadow-glow)',
 			},
 			transitionTimingFunction: {
 				'calm': 'var(--transition-calm)'
@@ -151,8 +157,9 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
-				'scale-in': 'scale-in 0.2s ease-out'
-			}
+				'scale-in': 'scale-in 0.2s ease-out',
+				'pulse-slow': 'pulse 3s infinite',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

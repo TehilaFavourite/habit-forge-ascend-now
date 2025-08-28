@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { timerService } from '../services/timerService';
 
 export type TimerMode = "work" | "shortBreak" | "longBreak";
 
@@ -47,8 +48,7 @@ interface PomodoroState {
   pauseTimer: () => void;
   startTimer: () => void;
   completeSession: () => void;
-  startTicking: () => void;
-  stopTicking: () => void;
+  tick: () => void;
 }
 
 export const usePomodoroStore = create<PomodoroState>()(
@@ -74,11 +74,17 @@ export const usePomodoroStore = create<PomodoroState>()(
       
       // Setters
       setIsRunning: (running) => {
+        const state = get();
         set({ isRunning: running });
-        if (running && get().tickingEnabled) {
-          get().startTicking();
+        
+        if (running) {
+          timerService.start(state.tick);
+          if (state.tickingEnabled) {
+            timerService.startTicking();
+          }
         } else {
-          get().stopTicking();
+          timerService.stop(state.tick);
+          timerService.stopTicking();
         }
       },
       setTimeLeft: (time) => {
@@ -96,11 +102,13 @@ export const usePomodoroStore = create<PomodoroState>()(
       setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
       setSessionsUntilLongBreak: (sessions) => set({ sessionsUntilLongBreak: sessions }),
       setTickingEnabled: (enabled) => {
+        const state = get();
         set({ tickingEnabled: enabled });
-        if (enabled && get().isRunning) {
-          get().startTicking();
+        
+        if (enabled && state.isRunning) {
+          timerService.startTicking();
         } else {
-          get().stopTicking();
+          timerService.stopTicking();
         }
       },
       setSelectedSound: (sound) => set({ selectedSound: sound }),
@@ -127,14 +135,24 @@ export const usePomodoroStore = create<PomodoroState>()(
           timeLeft: duration,
           isRunning: false 
         });
+        timerService.stop(state.tick);
+        timerService.stopTicking();
       },
       
       pauseTimer: () => {
+        const state = get();
         set({ isRunning: false });
+        timerService.stop(state.tick);
+        timerService.stopTicking();
       },
       
       startTimer: () => {
+        const state = get();
         set({ isRunning: true });
+        timerService.start(state.tick);
+        if (state.tickingEnabled) {
+          timerService.startTicking();
+        }
       },
       
       completeSession: () => {
@@ -160,50 +178,25 @@ export const usePomodoroStore = create<PomodoroState>()(
           timeLeft: duration,
           isRunning: false
         });
+        
+        timerService.stop(state.tick);
+        timerService.stopTicking();
       },
 
-      startTicking: () => {
+      tick: () => {
         const state = get();
-        if (state.audioContext && state.oscillator) return; // Already running
-
-        try {
-          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-
-          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-          oscillator.type = 'sine';
-          gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-
-          oscillator.start();
-
-          set({ audioContext, oscillator, gainNode });
-        } catch (error) {
-          console.warn('Audio not supported:', error);
+        if (state.timeLeft <= 1) {
+          state.completeSession();
+          return;
         }
+        
+        if (state.tickingEnabled) {
+          timerService.playTick();
+        }
+        
+        set({ timeLeft: state.timeLeft - 1 });
       },
 
-      stopTicking: () => {
-        const { audioContext, oscillator } = get();
-        if (oscillator) {
-          try {
-            oscillator.stop();
-          } catch (e) {
-            // Oscillator may already be stopped
-          }
-        }
-        if (audioContext) {
-          try {
-            audioContext.close();
-          } catch (e) {
-            // Context may already be closed
-          }
-        }
-        set({ audioContext: null, oscillator: null, gainNode: null });
-      },
     }),
     {
       name: 'pomodoro-storage',
