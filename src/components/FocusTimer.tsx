@@ -157,9 +157,9 @@ export const FocusTimer = () => {
   const currentSound = FOCUS_SOUNDS.find((s) => s.value === selectedSound);
 
   const modeColors = {
-    work: "from-primary via-primary-glow to-accent",
-    shortBreak: "from-secondary via-secondary-glow to-muted",
-    longBreak: "from-accent via-accent-glow to-primary"
+    work: "from-primary via-primary-glow to-primary-light",
+    shortBreak: "from-secondary via-muted to-accent",
+    longBreak: "from-accent via-primary-glow to-primary"
   };
 
   const modeIcons = {
@@ -169,7 +169,7 @@ export const FocusTimer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary p-6">
+    <div className="min-h-screen bg-gradient-calm p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -182,7 +182,7 @@ export const FocusTimer = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Main Timer */}
           <div className="xl:col-span-2">
-            <Card className="bg-card/80 backdrop-blur-lg border-primary/20 shadow-elegant">
+            <Card className="bg-card/90 backdrop-blur-xl border-primary/30 shadow-calm">
               <CardHeader className="text-center pb-4">
                 <div className="flex items-center justify-center gap-3 mb-4">
                   {modeIcons[mode]}
@@ -203,9 +203,9 @@ export const FocusTimer = () => {
                 {/* Circular Timer */}
                 <div className="flex justify-center">
                   <div className="relative">
-                    <div 
-                      className={`w-72 h-72 rounded-full bg-gradient-to-br ${modeColors[mode]} p-2 shadow-glow animate-pulse-slow`}
-                    >
+                     <div 
+                       className={`w-72 h-72 rounded-full bg-gradient-to-br ${modeColors[mode]} p-2 shadow-calm animate-pulse-slow`}
+                     >
                       <div className="w-full h-full rounded-full bg-card flex items-center justify-center shadow-inner">
                         <div className="text-center">
                           <div className="text-6xl font-mono font-bold text-primary mb-2">
@@ -250,7 +250,7 @@ export const FocusTimer = () => {
                   <Button
                     onClick={isRunning ? pauseTimer : startTimer}
                     size="lg"
-                    className="bg-gradient-primary hover:opacity-90 text-primary-foreground px-8"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 shadow-calm"
                   >
                     {isRunning ? (
                       <>
@@ -308,7 +308,7 @@ export const FocusTimer = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <Card className="bg-card/80 backdrop-blur-lg border-accent/20">
+            <Card className="bg-card/90 backdrop-blur-xl border-primary/20 shadow-gentle">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
@@ -317,7 +317,7 @@ export const FocusTimer = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-accent mb-2">
+                  <div className="text-4xl font-bold text-primary mb-2">
                     {completedSessions}
                   </div>
                   <div className="text-sm text-muted-foreground">Completed Sessions</div>
@@ -329,7 +329,7 @@ export const FocusTimer = () => {
             </Card>
 
             {/* Settings */}
-            <Card className="bg-card/80 backdrop-blur-lg border-primary/20">
+            <Card className="bg-card/90 backdrop-blur-xl border-primary/20 shadow-gentle">
               <Tabs defaultValue="durations" className="w-full">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
@@ -418,9 +418,9 @@ export const FocusTimer = () => {
                         >
                           <span className="text-lg">{sound.icon}</span>
                           <span className="text-xs">{sound.name}</span>
-                          {selectedSound === sound.value && soundPlaying && (
-                            <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                          )}
+                           {selectedSound === sound.value && soundPlaying && (
+                             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                           )}
                         </Button>
                       ))}
                     </div>
