@@ -195,22 +195,37 @@ export const FocusTimer = () => {
       .padStart(2, "0")}`;
   };
 
-  const handleSoundSelect = (soundValue: string) => {
+  const handleSoundSelect = async (soundValue: string) => {
     if (selectedSound === soundValue) {
-      if (soundPlaying) {
-        audioRef.current?.pause();
+      if (soundPlaying && audioRef.current) {
+        audioRef.current.pause();
         setSoundPlaying(false);
-      } else {
-        audioRef.current?.play();
-        setSoundPlaying(true);
+      } else if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          setSoundPlaying(true);
+        } catch (error) {
+          console.warn("Could not play audio:", error);
+          toast.error("Unable to play sound. Please check your audio settings.");
+        }
       }
     } else {
       setSelectedSound(soundValue);
       if (soundValue !== "none") {
-        setSoundPlaying(true);
-        setTimeout(() => {
-          audioRef.current?.play();
-        }, 50);
+        // Wait for audio element to update with new source
+        setTimeout(async () => {
+          if (audioRef.current) {
+            try {
+              audioRef.current.load(); // Reload the audio with new source
+              await audioRef.current.play();
+              setSoundPlaying(true);
+            } catch (error) {
+              console.warn("Could not play audio:", error);
+              toast.error("Unable to play sound. Please check your audio settings.");
+              setSoundPlaying(false);
+            }
+          }
+        }, 100);
       } else {
         setSoundPlaying(false);
       }
