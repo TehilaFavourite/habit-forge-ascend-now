@@ -567,24 +567,40 @@ export default function OnboardingWizard() {
     generateTemplatesFromOnboarding(userId, data);
 
     // Personalize dashboard based on user preferences
-    const recommendedTabs = ["habits", "tasks", "progress", "settings"];
+    const recommendedTabs = ["habits", "tasks"];
     
     // Add tabs based on focus areas
     if (data.focusAreas.includes("fitness") || data.focusAreas.includes("wellness")) {
-      recommendedTabs.push("tracker", "mastery");
+      recommendedTabs.push("tracker", "mastery", "focus");
     }
     if (data.focusAreas.includes("learning") || data.focusAreas.includes("programming")) {
-      recommendedTabs.push("focus", "journal");
+      recommendedTabs.push("focus", "journal", "achievements");
     }
     if (data.focusAreas.includes("creative") || data.focusAreas.includes("music")) {
-      recommendedTabs.push("vision", "journal");
+      recommendedTabs.push("vision", "journal", "focus");
     }
     if (data.focusAreas.includes("career") || data.focusAreas.includes("business")) {
-      recommendedTabs.push("xp", "achievements");
+      recommendedTabs.push("xp", "achievements", "tracker");
+    }
+    if (data.focusAreas.includes("wellness")) {
+      recommendedTabs.push("journal", "mastery");
     }
     
-    // Always include rewards and activity tracker
-    recommendedTabs.push("rewards", "tracker");
+    // Always include core features based on commitment level
+    if (data.timeCommitment !== "5-15") {
+      recommendedTabs.push("focus");
+    }
+    
+    // Add rewards and progress tracking
+    recommendedTabs.push("rewards", "progress");
+    
+    // Experience level based additions
+    if (data.experienceLevel === "advanced") {
+      recommendedTabs.push("tracker", "achievements");
+    }
+    
+    // Always include settings
+    recommendedTabs.push("settings");
 
     // Remove duplicates and save to localStorage
     const uniqueTabs = [...new Set(recommendedTabs)];

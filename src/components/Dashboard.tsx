@@ -10,7 +10,7 @@ import { DayMastery } from "@/components/DayMastery";
 import { ProgressReport } from "@/components/ProgressReport";
 import { Settings } from "@/components/Settings";
 import { VisionBoard } from "@/components/VisionBoard";
-import { Journal } from "@/components/Journal";
+import { JournalDashboard } from "@/components/JournalDashboard";
 import { AchievementTracker } from "@/components/AchievementTracker";
 import { useAuthStore } from "@/stores/authStore";
 import { useHabitStore } from "@/stores/habitStore";
@@ -135,7 +135,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
       icon: Sparkles,
       component: VisionBoard,
     },
-    { id: "journal", label: "Journal", icon: BookOpen, component: Journal },
+    { id: "journal", label: "Journal", icon: BookOpen, component: JournalDashboard },
     {
       id: "progress",
       label: "Progress",

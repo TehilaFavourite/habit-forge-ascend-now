@@ -89,7 +89,14 @@ export default {
 				'onboarding-bg': 'hsl(var(--onboarding-bg))',
 				'onboarding-secondary': 'hsl(var(--onboarding-secondary))',
 				'onboarding-border': 'hsl(var(--onboarding-border))',
-				'onboarding-text': 'hsl(var(--onboarding-text))'
+				'onboarding-text': 'hsl(var(--onboarding-text))',
+				
+				"journal-primary": "hsl(var(--journal-primary))",
+				"journal-secondary": "hsl(var(--journal-secondary))",
+				"journal-accent": "hsl(var(--journal-accent))",
+				"journal-glow": "hsl(var(--journal-glow))",
+				"journal-warm": "hsl(var(--journal-warm))",
+				"journal-sunset": "hsl(var(--journal-sunset))"
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -104,6 +111,7 @@ export default {
 				'gradient-subtle': 'var(--gradient-subtle)',
 				'gradient-work': 'var(--gradient-work)',
 				'gradient-break': 'var(--gradient-break)',
+				'gradient-journal': 'var(--gradient-journal)'
 			},
 			boxShadow: {
 				'calm': 'var(--shadow-calm)',

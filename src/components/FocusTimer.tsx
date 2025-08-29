@@ -27,33 +27,129 @@ const FOCUS_SOUNDS = [
   {
     name: "Rain",
     value: "rain",
-    url: "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa6c82.mp3",
+    url: "https://www.soundjay.com/misc/sounds/rain-01.wav",
     icon: "🌧️",
+    category: "nature"
   },
   {
     name: "Forest",
-    value: "forest",
-    url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b9bfae2.mp3",
+    value: "forest", 
+    url: "https://www.soundjay.com/nature/sounds/forest-with-small-river.wav",
     icon: "🌲",
+    category: "nature"
   },
   {
-    name: "Ocean",
+    name: "Ocean Waves",
     value: "ocean",
-    url: "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa6c82.mp3",
+    url: "https://www.soundjay.com/nature/sounds/ocean-waves.wav", 
     icon: "🌊",
+    category: "nature"
+  },
+  {
+    name: "Thunder Storm",
+    value: "thunder",
+    url: "https://www.soundjay.com/nature/sounds/thunder-storm.wav",
+    icon: "⛈️",
+    category: "nature"
+  },
+  {
+    name: "Crackling Fire",
+    value: "fire",
+    url: "https://www.soundjay.com/misc/sounds/fire-crackling.wav",
+    icon: "🔥",
+    category: "nature"
   },
   {
     name: "Coffee Shop",
     value: "coffee",
-    url: "https://cdn.pixabay.com/audio/2022/10/16/audio_131bfa6c82.mp3",
+    url: "https://www.soundjay.com/misc/sounds/coffee-shop-ambience.wav",
     icon: "☕",
+    category: "ambient"
+  },
+  {
+    name: "Library",
+    value: "library",
+    url: "https://www.soundjay.com/misc/sounds/library-ambience.wav",
+    icon: "📚",
+    category: "ambient"
+  },
+  {
+    name: "City Traffic",
+    value: "city",
+    url: "https://www.soundjay.com/misc/sounds/city-traffic.wav",
+    icon: "🏙️", 
+    category: "ambient"
   },
   {
     name: "White Noise",
     value: "whitenoise",
-    url: "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa6c82.mp3",
-    icon: "🎧",
+    url: "https://www.soundjay.com/misc/sounds/white-noise.wav",
+    icon: "📻",
+    category: "noise"
   },
+  {
+    name: "Pink Noise",
+    value: "pinknoise",
+    url: "https://www.soundjay.com/misc/sounds/pink-noise.wav",
+    icon: "🎧",
+    category: "noise"
+  },
+  {
+    name: "Brown Noise", 
+    value: "brownnoise",
+    url: "https://www.soundjay.com/misc/sounds/brown-noise.wav",
+    icon: "🔊",
+    category: "noise"
+  },
+  {
+    name: "Classical Piano",
+    value: "classical",
+    url: "https://www.soundjay.com/music/sounds/classical-piano.wav",
+    icon: "🎹",
+    category: "music"
+  },
+  {
+    name: "Jazz Lounge",
+    value: "jazz",
+    url: "https://www.soundjay.com/music/sounds/jazz-lounge.wav", 
+    icon: "🎷",
+    category: "music"
+  },
+  {
+    name: "Lo-Fi Hip Hop",
+    value: "lofi",
+    url: "https://www.soundjay.com/music/sounds/lofi-hip-hop.wav",
+    icon: "🎵",
+    category: "music"
+  },
+  {
+    name: "Meditation Bells",
+    value: "bells",
+    url: "https://www.soundjay.com/misc/sounds/meditation-bells.wav",
+    icon: "🔔",
+    category: "meditation"
+  },
+  {
+    name: "Tibetan Bowls",
+    value: "bowls",
+    url: "https://www.soundjay.com/misc/sounds/tibetan-singing-bowls.wav", 
+    icon: "🥣",
+    category: "meditation"
+  },
+  {
+    name: "Birds Chirping",
+    value: "birds",
+    url: "https://www.soundjay.com/nature/sounds/birds-chirping.wav",
+    icon: "🐦",
+    category: "nature"
+  },
+  {
+    name: "Wind Chimes",
+    value: "chimes",
+    url: "https://www.soundjay.com/misc/sounds/wind-chimes.wav",
+    icon: "🎐",
+    category: "meditation"
+  }
 ];
 
 export const FocusTimer = () => {
@@ -407,22 +503,49 @@ export const FocusTimer = () => {
                   </TabsContent>
 
                   <TabsContent value="sounds" className="space-y-4 mt-0">
-                    <div className="grid grid-cols-2 gap-2">
-                      {FOCUS_SOUNDS.map((sound) => (
-                        <Button
-                          key={sound.value}
-                          variant={selectedSound === sound.value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleSoundSelect(sound.value)}
-                          className="h-auto py-3 flex flex-col gap-1"
-                        >
-                          <span className="text-lg">{sound.icon}</span>
-                          <span className="text-xs">{sound.name}</span>
-                           {selectedSound === sound.value && soundPlaying && (
-                             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                           )}
-                        </Button>
-                      ))}
+                    <div className="space-y-4">
+                      {/* Sound Categories */}
+                      {["nature", "ambient", "noise", "music", "meditation"].map((category) => {
+                        const categoryData = {
+                          nature: { name: "Nature", icon: "🌿" },
+                          ambient: { name: "Ambient", icon: "🏢" },
+                          noise: { name: "Noise", icon: "📻" },
+                          music: { name: "Music", icon: "🎵" },
+                          meditation: { name: "Meditation", icon: "🧘" }
+                        };
+                        
+                        const categorySounds = FOCUS_SOUNDS.filter(sound => 
+                          sound.category === category || (sound.value === "none" && category === "nature")
+                        );
+                        
+                        if (categorySounds.length === 0) return null;
+                        
+                        return (
+                          <div key={category}>
+                            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                              <span>{categoryData[category]?.icon}</span>
+                              {categoryData[category]?.name}
+                            </h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {categorySounds.map((sound) => (
+                                <Button
+                                  key={sound.value}
+                                  variant={selectedSound === sound.value ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => handleSoundSelect(sound.value)}
+                                  className="h-auto py-3 flex flex-col gap-1 relative"
+                                >
+                                  <span className="text-base">{sound.icon}</span>
+                                  <span className="text-xs leading-tight">{sound.name}</span>
+                                  {selectedSound === sound.value && soundPlaying && (
+                                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                                  )}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {selectedSound !== "none" && (

@@ -111,6 +111,17 @@ All colors MUST be HSL.
     --affirmation-border: 120 30% 85%;
     --affirmation-primary: 120 70% 60%;
 
+    /* Journal theme colors */
+    --journal-primary: 156 39% 54%;
+    --journal-secondary: 25 95% 53%;
+    --journal-accent: 292 76% 71%;
+    --journal-glow: 45 93% 78%;
+    --journal-warm: 14 100% 57%;
+    --journal-sunset: 39 100% 67%;
+    
+    /* Journal gradients */
+    --gradient-journal: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--journal-primary) / 0.05) 50%, hsl(var(--journal-accent) / 0.1) 100%);
+
     /* Onboarding colors */
     --onboarding-bg: 220 100% 97%;
     --onboarding-secondary: 220 60% 94%;
@@ -193,6 +204,14 @@ All colors MUST be HSL.
     --affirmation-secondary: 120 27% 12%;
     --affirmation-border: 120 15% 20%;
     --affirmation-primary: 120 70% 60%;
+
+    /* Journal theme colors - dark mode */
+    --journal-primary: 156 39% 54%;
+    --journal-secondary: 25 95% 53%;
+    --journal-accent: 292 76% 71%;
+    --journal-glow: 45 93% 78%;
+    --journal-warm: 14 100% 57%;
+    --journal-sunset: 39 100% 67%;
 
     /* Onboarding colors - dark mode */
     --onboarding-bg: 220 40% 8%;
