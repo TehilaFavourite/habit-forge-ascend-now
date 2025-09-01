@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shell } from "@/components/Shell";
-import { useSettingsStore } from "@/stores/settingsStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -13,10 +10,8 @@ import {
   UserCog,
   CalendarDays
 } from "lucide-react";
-import { CalendarDashboard } from "./CalendarDashboard";
 
 export const Dashboard = () => {
-  const { showFocus, showJournal, showHabits, showTodos } = useSettingsStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
 
@@ -66,21 +61,15 @@ export const Dashboard = () => {
   ];
 
   return (
-    <Shell>
+    <div className="container mx-auto p-6">
       <div className="grid gap-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Welcome, {user?.firstName}!
+            Welcome, {user?.username}!
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {dashboardConfig.map((item) => {
-            if (item.id === "focus" && !showFocus) return null;
-            if (item.id === "journal" && !showJournal) return null;
-            if (item.id === "habits" && !showHabits) return null;
-            if (item.id === "todos" && !showTodos) return null;
-
-            return (
+          {dashboardConfig.map((item) => (
               <Card
                 key={item.id}
                 className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-primary/20 bg-card/90 backdrop-blur-xl shadow-gentle hover:border-primary/40"
@@ -98,10 +87,9 @@ export const Dashboard = () => {
                   </CardDescription>
                 </CardContent>
               </Card>
-            );
-          })}
+            ))}
         </div>
       </div>
-    </Shell>
+    </div>
   );
 };
