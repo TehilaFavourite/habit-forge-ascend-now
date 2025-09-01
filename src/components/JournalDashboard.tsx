@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -14,7 +13,6 @@ import {
   Target,
   Heart,
   TrendingUp,
-  CalendarDays,
   Plus,
   X,
   Edit3,
@@ -617,34 +615,6 @@ export const JournalDashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Calendar */}
-            <Card className="bg-card/90 backdrop-blur-xl border-primary/20 shadow-gentle">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarDays className="h-5 w-5" />
-                  Writing Calendar
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2 flex justify-center">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  className="rounded-md border-0"
-                  modifiers={{
-                    hasEntry: userEntries.map(entry => new Date(entry.date))
-                  }}
-                  modifiersStyles={{
-                    hasEntry: { 
-                      backgroundColor: 'hsl(var(--journal-accent))', 
-                      color: 'white',
-                      fontWeight: 'bold'
-                    }
-                  }}
-                />
-              </CardContent>
-            </Card>
-
             {/* Quick Prompts */}
             <Card className="bg-card/90 backdrop-blur-xl border-primary/20 shadow-gentle">
               <CardHeader>

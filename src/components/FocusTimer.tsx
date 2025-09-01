@@ -27,126 +27,126 @@ const FOCUS_SOUNDS = [
   {
     name: "Rain",
     value: "rain", 
-    url: "https://cdn.freesound.org/previews/316/316847_5123451-lq.mp3",
+    url: "https://www.soundjay.com/misc/sounds/rain-01.mp3",
     icon: "🌧️",
     category: "nature"
   },
   {
     name: "Forest",
     value: "forest", 
-    url: "https://www.soundjay.com/nature/sounds/forest-with-small-river.wav",
+    url: "https://www.soundjay.com/nature/sounds/forest-with-small-river.mp3",
     icon: "🌲",
     category: "nature"
   },
   {
     name: "Ocean Waves",
     value: "ocean",
-    url: "https://www.soundjay.com/nature/sounds/ocean-waves.wav", 
+    url: "https://www.soundjay.com/nature/sounds/ocean-waves.mp3", 
     icon: "🌊",
     category: "nature"
   },
   {
     name: "Thunder Storm",
     value: "thunder",
-    url: "https://www.soundjay.com/nature/sounds/thunder-storm.wav",
+    url: "https://www.soundjay.com/nature/sounds/thunder-storm.mp3",
     icon: "⛈️",
     category: "nature"
   },
   {
     name: "Crackling Fire",
     value: "fire",
-    url: "https://www.soundjay.com/misc/sounds/fire-crackling.wav",
+    url: "https://www.soundjay.com/misc/sounds/fire-crackling.mp3",
     icon: "🔥",
     category: "nature"
   },
   {
     name: "Coffee Shop",
     value: "coffee",
-    url: "https://www.soundjay.com/misc/sounds/coffee-shop-ambience.wav",
+    url: "https://www.soundjay.com/misc/sounds/coffee-shop-ambience.mp3",
     icon: "☕",
     category: "ambient"
   },
   {
     name: "Library",
     value: "library",
-    url: "https://www.soundjay.com/misc/sounds/library-ambience.wav",
+    url: "https://www.soundjay.com/misc/sounds/library-ambience.mp3",
     icon: "📚",
     category: "ambient"
   },
   {
     name: "City Traffic",
     value: "city",
-    url: "https://www.soundjay.com/misc/sounds/city-traffic.wav",
+    url: "https://www.soundjay.com/misc/sounds/city-traffic.mp3",
     icon: "🏙️", 
     category: "ambient"
   },
   {
     name: "White Noise",
     value: "whitenoise",
-    url: "https://www.soundjay.com/misc/sounds/white-noise.wav",
+    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
     icon: "📻",
     category: "noise"
   },
   {
     name: "Pink Noise",
     value: "pinknoise",
-    url: "https://www.soundjay.com/misc/sounds/pink-noise.wav",
+    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
     icon: "🎧",
     category: "noise"
   },
   {
     name: "Brown Noise", 
     value: "brownnoise",
-    url: "https://www.soundjay.com/misc/sounds/brown-noise.wav",
+    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
     icon: "🔊",
     category: "noise"
   },
   {
     name: "Classical Piano",
     value: "classical",
-    url: "https://www.soundjay.com/music/sounds/classical-piano.wav",
+    url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
     icon: "🎹",
     category: "music"
   },
   {
     name: "Jazz Lounge",
     value: "jazz",
-    url: "https://www.soundjay.com/music/sounds/jazz-lounge.wav", 
+    url: "https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3", 
     icon: "🎷",
     category: "music"
   },
   {
     name: "Lo-Fi Hip Hop",
     value: "lofi",
-    url: "https://www.soundjay.com/music/sounds/lofi-hip-hop.wav",
+    url: "https://www.soundjay.com/misc/sounds/bell-ringing-03.mp3",
     icon: "🎵",
     category: "music"
   },
   {
     name: "Meditation Bells",
     value: "bells",
-    url: "https://www.soundjay.com/misc/sounds/meditation-bells.wav",
+    url: "https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3",
     icon: "🔔",
     category: "meditation"
   },
   {
     name: "Tibetan Bowls",
     value: "bowls",
-    url: "https://www.soundjay.com/misc/sounds/tibetan-singing-bowls.wav", 
+    url: "https://www.soundjay.com/misc/sounds/bell-ringing-02.mp3", 
     icon: "🥣",
     category: "meditation"
   },
   {
     name: "Birds Chirping",
     value: "birds",
-    url: "https://www.soundjay.com/nature/sounds/birds-chirping.wav",
+    url: "https://www.soundjay.com/nature/sounds/bird-02.mp3",
     icon: "🐦",
     category: "nature"
   },
   {
     name: "Wind Chimes",
     value: "chimes",
-    url: "https://www.soundjay.com/misc/sounds/wind-chimes.wav",
+    url: "https://www.soundjay.com/misc/sounds/wind-chime-1.mp3",
     icon: "🎐",
     category: "meditation"
   }
@@ -598,7 +598,7 @@ export const FocusTimer = () => {
         onPause={() => setSoundPlaying(false)}
         onError={(e) => {
           console.warn("Audio error:", e);
-          toast.error("Sound file not available. This is a demo app with placeholder sounds.");
+          toast.error("This is a demo app with placeholder sounds. Real audio files would work in production.");
           setSoundPlaying(false);
         }}
         style={{ display: "none" }}
