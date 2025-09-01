@@ -26,8 +26,8 @@ const FOCUS_SOUNDS = [
   { name: "None", value: "none", icon: "🔇" },
   {
     name: "Rain",
-    value: "rain",
-    url: "https://www.soundjay.com/misc/sounds/rain-01.wav",
+    value: "rain", 
+    url: "https://cdn.freesound.org/previews/316/316847_5123451-lq.mp3",
     icon: "🌧️",
     category: "nature"
   },
@@ -590,16 +590,19 @@ export const FocusTimer = () => {
       </div>
 
       {/* Hidden Audio Element */}
-      {selectedSound !== "none" && (
-        <audio
-          ref={audioRef}
-          src={currentSound?.url}
-          loop
-          onPlay={() => setSoundPlaying(true)}
-          onPause={() => setSoundPlaying(false)}
-          style={{ display: "none" }}
-        />
-      )}
+      <audio
+        ref={audioRef}
+        src={currentSound?.url || ""}
+        loop
+        onPlay={() => setSoundPlaying(true)}
+        onPause={() => setSoundPlaying(false)}
+        onError={(e) => {
+          console.warn("Audio error:", e);
+          toast.error("Sound file not available. This is a demo app with placeholder sounds.");
+          setSoundPlaying(false);
+        }}
+        style={{ display: "none" }}
+      />
     </div>
   );
 };

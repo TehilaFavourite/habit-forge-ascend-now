@@ -625,12 +625,12 @@ export const JournalDashboard = () => {
                   Writing Calendar
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-3">
+              <CardContent className="p-2 flex justify-center">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={(date) => date && setSelectedDate(date)}
-                  className="rounded-md border-0 w-full"
+                  className="rounded-md border-0"
                   modifiers={{
                     hasEntry: userEntries.map(entry => new Date(entry.date))
                   }}
