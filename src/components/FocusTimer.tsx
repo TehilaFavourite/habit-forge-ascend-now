@@ -27,126 +27,126 @@ const FOCUS_SOUNDS = [
   {
     name: "Rain",
     value: "rain", 
-    url: "https://www.soundjay.com/misc/sounds/rain-01.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3",
     icon: "🌧️",
     category: "nature"
   },
   {
     name: "Forest",
     value: "forest", 
-    url: "https://www.soundjay.com/nature/sounds/forest-with-small-river.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/03/30/audio_b1c7eeafee.mp3",
     icon: "🌲",
     category: "nature"
   },
   {
     name: "Ocean Waves",
     value: "ocean",
-    url: "https://www.soundjay.com/nature/sounds/ocean-waves.mp3", 
+    url: "https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3", 
     icon: "🌊",
     category: "nature"
   },
   {
     name: "Thunder Storm",
     value: "thunder",
-    url: "https://www.soundjay.com/nature/sounds/thunder-storm.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/06/07/audio_a0c0065321.mp3",
     icon: "⛈️",
     category: "nature"
   },
   {
     name: "Crackling Fire",
     value: "fire",
-    url: "https://www.soundjay.com/misc/sounds/fire-crackling.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/11/22/audio_95e0963c37.mp3",
     icon: "🔥",
     category: "nature"
   },
   {
     name: "Coffee Shop",
     value: "coffee",
-    url: "https://www.soundjay.com/misc/sounds/coffee-shop-ambience.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/09/20/audio_146aa77b61.mp3",
     icon: "☕",
     category: "ambient"
   },
   {
     name: "Library",
     value: "library",
-    url: "https://www.soundjay.com/misc/sounds/library-ambience.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/05/12/audio_c70b81d21e.mp3",
     icon: "📚",
     category: "ambient"
   },
   {
     name: "City Traffic",
     value: "city",
-    url: "https://www.soundjay.com/misc/sounds/city-traffic.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/03/10/audio_db2f6b4b7b.mp3",
     icon: "🏙️", 
     category: "ambient"
   },
   {
     name: "White Noise",
     value: "whitenoise",
-    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
+    url: "https://cdn.pixabay.com/audio/2022/03/12/audio_4672c6bb8a.mp3",
     icon: "📻",
     category: "noise"
   },
   {
     name: "Pink Noise",
     value: "pinknoise",
-    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
+    url: "https://cdn.pixabay.com/audio/2023/02/28/audio_22fb003159.mp3",
     icon: "🎧",
     category: "noise"
   },
   {
     name: "Brown Noise", 
     value: "brownnoise",
-    url: "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGt657659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykGvG1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuV2O/CdykGTrDH8t2QQAkUXrPp66hVFApGnt/yvmwhBjuU2O/CdykGKXzN7tiJNgcZZ7zs559NEA1QqOPwtmMcBjiP2fHLeSsFJHfH8N2QQAoTXrTp66hVFApGnt/yv2wgBTuU2O7CdykGtq57659KDg9OpN/ywm4jBjeO2fDKeiwEJHXG8N2QQAoTXrTp66hUFApGnt/yv2wgBTuU2O7CdykG",
+    url: "https://cdn.pixabay.com/audio/2023/10/03/audio_dcbea8fbe9.mp3",
     icon: "🔊",
     category: "noise"
   },
   {
     name: "Classical Piano",
     value: "classical",
-    url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/12/06/audio_0625c1939c.mp3",
     icon: "🎹",
     category: "music"
   },
   {
     name: "Jazz Lounge",
     value: "jazz",
-    url: "https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3", 
+    url: "https://cdn.pixabay.com/audio/2022/01/28/audio_e2c0e4d6a8.mp3", 
     icon: "🎷",
     category: "music"
   },
   {
     name: "Lo-Fi Hip Hop",
     value: "lofi",
-    url: "https://www.soundjay.com/misc/sounds/bell-ringing-03.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/08/02/audio_2dde668d05.mp3",
     icon: "🎵",
     category: "music"
   },
   {
     name: "Meditation Bells",
     value: "bells",
-    url: "https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/11/27/audio_af9f1d6665.mp3",
     icon: "🔔",
     category: "meditation"
   },
   {
     name: "Tibetan Bowls",
     value: "bowls",
-    url: "https://www.soundjay.com/misc/sounds/bell-ringing-02.mp3", 
+    url: "https://cdn.pixabay.com/audio/2022/03/15/audio_a5b1d1e96e.mp3", 
     icon: "🥣",
     category: "meditation"
   },
   {
     name: "Birds Chirping",
     value: "birds",
-    url: "https://www.soundjay.com/nature/sounds/bird-02.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/03/09/audio_c610232c2c.mp3",
     icon: "🐦",
     category: "nature"
   },
   {
     name: "Wind Chimes",
     value: "chimes",
-    url: "https://www.soundjay.com/misc/sounds/wind-chime-1.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/07/25/audio_3fabe9c6d8.mp3",
     icon: "🎐",
     category: "meditation"
   }
