@@ -503,23 +503,29 @@ export const FocusTimer = () => {
   const handleSoundSelect = (soundValue: string) => {
     if (!audioGeneratorRef.current) return;
 
+    // Always stop current sound first
+    audioGeneratorRef.current.stop();
+    setSoundPlaying(false);
+    
+    if (soundValue === "none") {
+      // User selected "none" - just stop everything
+      setSelectedSound("none");
+      return;
+    }
+
     if (selectedSound === soundValue) {
-      // Toggle current sound
+      // Toggle current sound (only if not "none")
       if (soundPlaying) {
-        audioGeneratorRef.current.stop();
-        setSoundPlaying(false);
+        // Already stopped above, just update state
+        setSelectedSound("none");
       } else {
+        setSelectedSound(soundValue);
         playSelectedSound(soundValue);
       }
     } else {
       // Switch to new sound
-      audioGeneratorRef.current.stop();
       setSelectedSound(soundValue);
-      if (soundValue !== "none") {
-        playSelectedSound(soundValue);
-      } else {
-        setSoundPlaying(false);
-      }
+      playSelectedSound(soundValue);
     }
   };
 
@@ -597,9 +603,13 @@ export const FocusTimer = () => {
   useEffect(() => {
     if (!audioGeneratorRef.current) return;
     
+    // Only restart sound if we have a non-none sound selected and we should be playing
     if (selectedSound !== "none" && soundPlaying) {
       audioGeneratorRef.current.stop();
       playSelectedSound(selectedSound);
+    } else if (selectedSound === "none") {
+      // Ensure sound is stopped when "none" is selected
+      audioGeneratorRef.current.stop();
     }
   }, [selectedSound]);
 
