@@ -27,6 +27,7 @@ class AudioGenerator {
   private audioContext: AudioContext | null = null;
   private currentNodes: AudioNode[] = [];
   private masterGain: GainNode | null = null;
+  private activeTimeouts: NodeJS.Timeout[] = [];
 
   constructor() {
     try {
@@ -46,6 +47,7 @@ class AudioGenerator {
   }
 
   stop() {
+    // Stop all audio nodes
     this.currentNodes.forEach(node => {
       try {
         if ('stop' in node) {
@@ -56,6 +58,10 @@ class AudioGenerator {
       }
     });
     this.currentNodes = [];
+    
+    // Clear all active timeouts
+    this.activeTimeouts.forEach(timeout => clearTimeout(timeout));
+    this.activeTimeouts = [];
   }
 
   generateRain() {
@@ -269,7 +275,8 @@ class AudioGenerator {
       osc.start();
       osc.stop(this.audioContext.currentTime + 0.3);
       
-      setTimeout(chirpInterval, 1000 + Math.random() * 3000);
+      const timeoutId = setTimeout(chirpInterval, 1000 + Math.random() * 3000);
+      this.activeTimeouts.push(timeoutId);
     };
     
     chirpInterval();
@@ -297,7 +304,8 @@ class AudioGenerator {
       osc.start();
       osc.stop(this.audioContext.currentTime + 3);
       
-      setTimeout(bellInterval, 5000 + Math.random() * 10000);
+      const timeoutId = setTimeout(bellInterval, 5000 + Math.random() * 10000);
+      this.activeTimeouts.push(timeoutId);
     };
     
     bellInterval();
@@ -328,7 +336,8 @@ class AudioGenerator {
       osc.start();
       osc.stop(this.audioContext.currentTime + 2);
       
-      setTimeout(playNote, 1000 + Math.random() * 2000);
+      const timeoutId = setTimeout(playNote, 1000 + Math.random() * 2000);
+      this.activeTimeouts.push(timeoutId);
     };
     
     playNote();
