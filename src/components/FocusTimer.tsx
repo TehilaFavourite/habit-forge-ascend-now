@@ -22,131 +22,426 @@ import { toast } from "sonner";
 import { useAchievementTracker } from "@/stores/achievementTracker";
 import { usePomodoroStore, type TimerMode } from "@/stores/pomodoroStore";
 
+// Audio generator class for creating sounds programmatically
+class AudioGenerator {
+  private audioContext: AudioContext | null = null;
+  private currentNodes: AudioNode[] = [];
+  private masterGain: GainNode | null = null;
+
+  constructor() {
+    try {
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.masterGain = this.audioContext.createGain();
+      this.masterGain.connect(this.audioContext.destination);
+      this.masterGain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+    } catch (error) {
+      console.warn('Web Audio API not supported:', error);
+    }
+  }
+
+  setVolume(volume: number) {
+    if (this.masterGain) {
+      this.masterGain.gain.setValueAtTime(volume / 100, this.audioContext!.currentTime);
+    }
+  }
+
+  stop() {
+    this.currentNodes.forEach(node => {
+      try {
+        if ('stop' in node) {
+          (node as any).stop();
+        }
+      } catch (e) {
+        // Already stopped
+      }
+    });
+    this.currentNodes = [];
+  }
+
+  generateRain() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    // Create filtered white noise for rain sound
+    const bufferSize = 4096;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    const filter = this.audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, this.audioContext.currentTime);
+    filter.Q.setValueAtTime(0.5, this.audioContext.currentTime);
+    
+    noise.connect(filter);
+    filter.connect(this.masterGain);
+    noise.start();
+    
+    this.currentNodes.push(noise);
+  }
+
+  generateOcean() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    // Low frequency oscillation for waves
+    const osc1 = this.audioContext.createOscillator();
+    const osc2 = this.audioContext.createOscillator();
+    const gain1 = this.audioContext.createGain();
+    const gain2 = this.audioContext.createGain();
+    
+    osc1.frequency.setValueAtTime(0.1, this.audioContext.currentTime);
+    osc2.frequency.setValueAtTime(0.07, this.audioContext.currentTime);
+    osc1.type = 'sine';
+    osc2.type = 'sine';
+    
+    gain1.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+    gain2.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+    
+    // Add white noise filtered low
+    const bufferSize = 4096;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.1;
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    const filter = this.audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, this.audioContext.currentTime);
+    
+    osc1.connect(gain1);
+    osc2.connect(gain2);
+    noise.connect(filter);
+    
+    gain1.connect(this.masterGain);
+    gain2.connect(this.masterGain);
+    filter.connect(this.masterGain);
+    
+    osc1.start();
+    osc2.start();
+    noise.start();
+    
+    this.currentNodes.push(osc1, osc2, noise);
+  }
+
+  generateFire() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    // Random crackling sounds
+    const bufferSize = 8192;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      // Create crackling pattern
+      const randomValue = Math.random();
+      if (randomValue > 0.99) {
+        data[i] = (Math.random() * 2 - 1) * 0.8;
+      } else if (randomValue > 0.95) {
+        data[i] = (Math.random() * 2 - 1) * 0.3;
+      } else {
+        data[i] = (Math.random() * 2 - 1) * 0.05;
+      }
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    const filter = this.audioContext.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(100, this.audioContext.currentTime);
+    
+    noise.connect(filter);
+    filter.connect(this.masterGain);
+    noise.start();
+    
+    this.currentNodes.push(noise);
+  }
+
+  generateWhiteNoise() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const bufferSize = 4096;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    noise.connect(this.masterGain);
+    noise.start();
+    
+    this.currentNodes.push(noise);
+  }
+
+  generatePinkNoise() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const bufferSize = 4096;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    noise.connect(this.masterGain);
+    noise.start();
+    
+    this.currentNodes.push(noise);
+  }
+
+  generateBrownNoise() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const bufferSize = 4096;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+    
+    const noise = this.audioContext.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    
+    noise.connect(this.masterGain);
+    noise.start();
+    
+    this.currentNodes.push(noise);
+  }
+
+  generateBirds() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const chirpInterval = () => {
+      if (!this.audioContext || !this.masterGain) return;
+      
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      
+      osc.frequency.setValueAtTime(800 + Math.random() * 1200, this.audioContext.currentTime);
+      osc.type = 'sine';
+      
+      gain.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
+      
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      
+      osc.start();
+      osc.stop(this.audioContext.currentTime + 0.3);
+      
+      setTimeout(chirpInterval, 1000 + Math.random() * 3000);
+    };
+    
+    chirpInterval();
+  }
+
+  generateMeditationBells() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const bellInterval = () => {
+      if (!this.audioContext || !this.masterGain) return;
+      
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      
+      osc.frequency.setValueAtTime(440, this.audioContext.currentTime);
+      osc.type = 'sine';
+      
+      gain.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 3);
+      
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      
+      osc.start();
+      osc.stop(this.audioContext.currentTime + 3);
+      
+      setTimeout(bellInterval, 5000 + Math.random() * 10000);
+    };
+    
+    bellInterval();
+  }
+
+  generateClassical() {
+    if (!this.audioContext || !this.masterGain) return;
+    
+    const frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88]; // C major scale
+    
+    const playNote = () => {
+      if (!this.audioContext || !this.masterGain) return;
+      
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      
+      const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+      osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+      osc.type = 'sine';
+      
+      gain.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 2);
+      
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      
+      osc.start();
+      osc.stop(this.audioContext.currentTime + 2);
+      
+      setTimeout(playNote, 1000 + Math.random() * 2000);
+    };
+    
+    playNote();
+  }
+}
+
 const FOCUS_SOUNDS = [
   { name: "None", value: "none", icon: "🔇" },
   {
     name: "Rain",
     value: "rain", 
-    url: "https://cdn.pixabay.com/audio/2022/05/13/audio_257112ce99.mp3",
     icon: "🌧️",
     category: "nature"
   },
   {
     name: "Forest",
     value: "forest", 
-    url: "https://cdn.pixabay.com/audio/2022/03/10/audio_4d9159c07c.mp3",
     icon: "🌲",
     category: "nature"
   },
   {
     name: "Ocean Waves",
     value: "ocean",
-    url: "https://cdn.pixabay.com/audio/2022/06/07/audio_89ba5f7e28.mp3", 
     icon: "🌊",
     category: "nature"
   },
   {
     name: "Thunder Storm",
     value: "thunder",
-    url: "https://cdn.pixabay.com/audio/2022/01/18/audio_34b0250ba7.mp3",
     icon: "⛈️",
     category: "nature"
   },
   {
     name: "Crackling Fire",
     value: "fire",
-    url: "https://cdn.pixabay.com/audio/2023/11/28/audio_af6db90ad5.mp3",
     icon: "🔥",
     category: "nature"
   },
   {
     name: "Coffee Shop",
     value: "coffee",
-    url: "https://cdn.pixabay.com/audio/2023/09/26/audio_3916002d5b.mp3",
     icon: "☕",
     category: "ambient"
   },
   {
     name: "Library",
     value: "library",
-    url: "https://cdn.pixabay.com/audio/2023/03/01/audio_e3bbf28d04.mp3",
     icon: "📚",
     category: "ambient"
   },
   {
     name: "City Traffic",
     value: "city",
-    url: "https://cdn.pixabay.com/audio/2024/01/10/audio_8955c7f1a3.mp3",
     icon: "🏙️", 
     category: "ambient"
   },
   {
     name: "White Noise",
     value: "whitenoise",
-    url: "https://cdn.pixabay.com/audio/2022/11/27/audio_59e27ed8b6.mp3",
     icon: "📻",
     category: "noise"
   },
   {
     name: "Pink Noise",
     value: "pinknoise",
-    url: "https://cdn.pixabay.com/audio/2022/03/12/audio_bbca49c4d9.mp3",
     icon: "🎧",
     category: "noise"
   },
   {
     name: "Brown Noise", 
     value: "brownnoise",
-    url: "https://cdn.pixabay.com/audio/2023/10/06/audio_01acce6a96.mp3",
     icon: "🔊",
     category: "noise"
   },
   {
     name: "Classical Piano",
     value: "classical",
-    url: "https://cdn.pixabay.com/audio/2022/09/20/audio_b0e5e4bd96.mp3",
     icon: "🎹",
     category: "music"
   },
   {
     name: "Jazz Lounge",
     value: "jazz",
-    url: "https://cdn.pixabay.com/audio/2023/08/01/audio_bcff9c5365.mp3", 
     icon: "🎷",
     category: "music"
   },
   {
     name: "Lo-Fi Hip Hop",
     value: "lofi",
-    url: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
     icon: "🎵",
     category: "music"
   },
   {
     name: "Meditation Bells",
     value: "bells",
-    url: "https://cdn.pixabay.com/audio/2022/12/06/audio_e82c8aeb01.mp3",
     icon: "🔔",
     category: "meditation"
   },
   {
     name: "Tibetan Bowls",
     value: "bowls",
-    url: "https://cdn.pixabay.com/audio/2023/04/26/audio_0310a0c2e8.mp3", 
     icon: "🥣",
     category: "meditation"
   },
   {
     name: "Birds Chirping",
     value: "birds",
-    url: "https://cdn.pixabay.com/audio/2022/03/09/audio_c610232c0c.mp3",
     icon: "🐦",
     category: "nature"
   },
   {
     name: "Wind Chimes",
     value: "chimes",
-    url: "https://cdn.pixabay.com/audio/2023/07/21/audio_8b4b745e43.mp3",
     icon: "🎐",
     category: "meditation"
   }
@@ -184,8 +479,18 @@ export const FocusTimer = () => {
     completeSession,
   } = usePomodoroStore();
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioGeneratorRef = useRef<AudioGenerator | null>(null);
   const tracker = useAchievementTracker();
+
+  // Initialize audio generator
+  useEffect(() => {
+    audioGeneratorRef.current = new AudioGenerator();
+    return () => {
+      if (audioGeneratorRef.current) {
+        audioGeneratorRef.current.stop();
+      }
+    };
+  }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -195,49 +500,108 @@ export const FocusTimer = () => {
       .padStart(2, "0")}`;
   };
 
-  const handleSoundSelect = async (soundValue: string) => {
+  const handleSoundSelect = (soundValue: string) => {
+    if (!audioGeneratorRef.current) return;
+
     if (selectedSound === soundValue) {
-      if (soundPlaying && audioRef.current) {
-        audioRef.current.pause();
+      // Toggle current sound
+      if (soundPlaying) {
+        audioGeneratorRef.current.stop();
         setSoundPlaying(false);
-      } else if (audioRef.current) {
-        try {
-          await audioRef.current.play();
-          setSoundPlaying(true);
-        } catch (error) {
-          console.warn("Could not play audio:", error);
-          toast.error("Unable to play sound. Please check your audio settings.");
-        }
+      } else {
+        playSelectedSound(soundValue);
       }
     } else {
+      // Switch to new sound
+      audioGeneratorRef.current.stop();
       setSelectedSound(soundValue);
       if (soundValue !== "none") {
-        // Wait for audio element to update with new source
-        setTimeout(async () => {
-          if (audioRef.current) {
-            try {
-              audioRef.current.load(); // Reload the audio with new source
-              await audioRef.current.play();
-              setSoundPlaying(true);
-            } catch (error) {
-              console.warn("Could not play audio:", error);
-              toast.error("Unable to play sound. Please check your audio settings.");
-              setSoundPlaying(false);
-            }
-          }
-        }, 100);
+        playSelectedSound(soundValue);
       } else {
         setSoundPlaying(false);
       }
     }
   };
 
-  const handleSoundVolume = (value: number[]) => {
-    setSoundVolume(value[0]);
-    if (audioRef.current) {
-      audioRef.current.volume = value[0] / 100;
+  const playSelectedSound = (soundValue: string) => {
+    if (!audioGeneratorRef.current) return;
+
+    try {
+      // Map sound values to generator methods
+      switch (soundValue) {
+        case "rain":
+        case "forest":
+        case "thunder":
+          audioGeneratorRef.current.generateRain();
+          break;
+        case "ocean":
+          audioGeneratorRef.current.generateOcean();
+          break;
+        case "fire":
+          audioGeneratorRef.current.generateFire();
+          break;
+        case "coffee":
+        case "library":
+        case "city":
+          audioGeneratorRef.current.generateBrownNoise();
+          break;
+        case "whitenoise":
+          audioGeneratorRef.current.generateWhiteNoise();
+          break;
+        case "pinknoise":
+          audioGeneratorRef.current.generatePinkNoise();
+          break;
+        case "brownnoise":
+          audioGeneratorRef.current.generateBrownNoise();
+          break;
+        case "classical":
+        case "jazz":
+        case "lofi":
+          audioGeneratorRef.current.generateClassical();
+          break;
+        case "bells":
+        case "bowls":
+        case "chimes":
+          audioGeneratorRef.current.generateMeditationBells();
+          break;
+        case "birds":
+          audioGeneratorRef.current.generateBirds();
+          break;
+        default:
+          return;
+      }
+      setSoundPlaying(true);
+      toast.success(`${FOCUS_SOUNDS.find(s => s.value === soundValue)?.name} sound started`);
+    } catch (error) {
+      console.warn("Could not generate audio:", error);
+      toast.error("Unable to generate sound. Web Audio API may not be supported.");
+      setSoundPlaying(false);
     }
   };
+
+  const handleSoundVolume = (value: number[]) => {
+    setSoundVolume(value[0]);
+    if (audioGeneratorRef.current) {
+      audioGeneratorRef.current.setVolume(value[0]);
+    }
+  };
+
+  // Update volume when it changes
+  useEffect(() => {
+    if (audioGeneratorRef.current) {
+      audioGeneratorRef.current.setVolume(soundVolume);
+    }
+  }, [soundVolume]);
+
+  // Handle sound selection changes
+  useEffect(() => {
+    if (!audioGeneratorRef.current) return;
+    
+    if (selectedSound !== "none" && soundPlaying) {
+      audioGeneratorRef.current.stop();
+      playSelectedSound(selectedSound);
+    }
+  }, [selectedSound]);
 
   const handleTimerComplete = () => {
     if (mode === "work") {
@@ -247,12 +611,6 @@ export const FocusTimer = () => {
       toast.success("Break time over! Ready for another focused session?");
     }
   };
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = soundVolume / 100;
-    }
-  }, [soundVolume]);
 
   // Listen for timer completion
   useEffect(() => {
@@ -588,21 +946,6 @@ export const FocusTimer = () => {
           </div>
         </div>
       </div>
-
-      {/* Hidden Audio Element */}
-      <audio
-        ref={audioRef}
-        src={currentSound?.url || ""}
-        loop
-        onPlay={() => setSoundPlaying(true)}
-        onPause={() => setSoundPlaying(false)}
-        onError={(e) => {
-          console.warn("Audio error:", e);
-          toast.error("Sound file not available. This is a demo app with placeholder sounds.");
-          setSoundPlaying(false);
-        }}
-        style={{ display: "none" }}
-      />
     </div>
   );
 };
