@@ -27,126 +27,126 @@ const FOCUS_SOUNDS = [
   {
     name: "Rain",
     value: "rain", 
-    url: "https://cdn.freesound.org/previews/316/316847_5123451-lq.mp3",
+    url: "https://cdn.pixabay.com/audio/2022/05/13/audio_257112ce99.mp3",
     icon: "🌧️",
     category: "nature"
   },
   {
     name: "Forest",
     value: "forest", 
-    url: "https://www.soundjay.com/nature/sounds/forest-with-small-river.wav",
+    url: "https://cdn.pixabay.com/audio/2022/03/10/audio_4d9159c07c.mp3",
     icon: "🌲",
     category: "nature"
   },
   {
     name: "Ocean Waves",
     value: "ocean",
-    url: "https://www.soundjay.com/nature/sounds/ocean-waves.wav", 
+    url: "https://cdn.pixabay.com/audio/2022/06/07/audio_89ba5f7e28.mp3", 
     icon: "🌊",
     category: "nature"
   },
   {
     name: "Thunder Storm",
     value: "thunder",
-    url: "https://www.soundjay.com/nature/sounds/thunder-storm.wav",
+    url: "https://cdn.pixabay.com/audio/2022/01/18/audio_34b0250ba7.mp3",
     icon: "⛈️",
     category: "nature"
   },
   {
     name: "Crackling Fire",
     value: "fire",
-    url: "https://www.soundjay.com/misc/sounds/fire-crackling.wav",
+    url: "https://cdn.pixabay.com/audio/2023/11/28/audio_af6db90ad5.mp3",
     icon: "🔥",
     category: "nature"
   },
   {
     name: "Coffee Shop",
     value: "coffee",
-    url: "https://www.soundjay.com/misc/sounds/coffee-shop-ambience.wav",
+    url: "https://cdn.pixabay.com/audio/2023/09/26/audio_3916002d5b.mp3",
     icon: "☕",
     category: "ambient"
   },
   {
     name: "Library",
     value: "library",
-    url: "https://www.soundjay.com/misc/sounds/library-ambience.wav",
+    url: "https://cdn.pixabay.com/audio/2023/03/01/audio_e3bbf28d04.mp3",
     icon: "📚",
     category: "ambient"
   },
   {
     name: "City Traffic",
     value: "city",
-    url: "https://www.soundjay.com/misc/sounds/city-traffic.wav",
+    url: "https://cdn.pixabay.com/audio/2024/01/10/audio_8955c7f1a3.mp3",
     icon: "🏙️", 
     category: "ambient"
   },
   {
     name: "White Noise",
     value: "whitenoise",
-    url: "https://www.soundjay.com/misc/sounds/white-noise.wav",
+    url: "https://cdn.pixabay.com/audio/2022/11/27/audio_59e27ed8b6.mp3",
     icon: "📻",
     category: "noise"
   },
   {
     name: "Pink Noise",
     value: "pinknoise",
-    url: "https://www.soundjay.com/misc/sounds/pink-noise.wav",
+    url: "https://cdn.pixabay.com/audio/2022/03/12/audio_bbca49c4d9.mp3",
     icon: "🎧",
     category: "noise"
   },
   {
     name: "Brown Noise", 
     value: "brownnoise",
-    url: "https://www.soundjay.com/misc/sounds/brown-noise.wav",
+    url: "https://cdn.pixabay.com/audio/2023/10/06/audio_01acce6a96.mp3",
     icon: "🔊",
     category: "noise"
   },
   {
     name: "Classical Piano",
     value: "classical",
-    url: "https://www.soundjay.com/music/sounds/classical-piano.wav",
+    url: "https://cdn.pixabay.com/audio/2022/09/20/audio_b0e5e4bd96.mp3",
     icon: "🎹",
     category: "music"
   },
   {
     name: "Jazz Lounge",
     value: "jazz",
-    url: "https://www.soundjay.com/music/sounds/jazz-lounge.wav", 
+    url: "https://cdn.pixabay.com/audio/2023/08/01/audio_bcff9c5365.mp3", 
     icon: "🎷",
     category: "music"
   },
   {
     name: "Lo-Fi Hip Hop",
     value: "lofi",
-    url: "https://www.soundjay.com/music/sounds/lofi-hip-hop.wav",
+    url: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
     icon: "🎵",
     category: "music"
   },
   {
     name: "Meditation Bells",
     value: "bells",
-    url: "https://www.soundjay.com/misc/sounds/meditation-bells.wav",
+    url: "https://cdn.pixabay.com/audio/2022/12/06/audio_e82c8aeb01.mp3",
     icon: "🔔",
     category: "meditation"
   },
   {
     name: "Tibetan Bowls",
     value: "bowls",
-    url: "https://www.soundjay.com/misc/sounds/tibetan-singing-bowls.wav", 
+    url: "https://cdn.pixabay.com/audio/2023/04/26/audio_0310a0c2e8.mp3", 
     icon: "🥣",
     category: "meditation"
   },
   {
     name: "Birds Chirping",
     value: "birds",
-    url: "https://www.soundjay.com/nature/sounds/birds-chirping.wav",
+    url: "https://cdn.pixabay.com/audio/2022/03/09/audio_c610232c0c.mp3",
     icon: "🐦",
     category: "nature"
   },
   {
     name: "Wind Chimes",
     value: "chimes",
-    url: "https://www.soundjay.com/misc/sounds/wind-chimes.wav",
+    url: "https://cdn.pixabay.com/audio/2023/07/21/audio_8b4b745e43.mp3",
     icon: "🎐",
     category: "meditation"
   }
