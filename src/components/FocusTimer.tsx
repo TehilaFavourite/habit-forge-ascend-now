@@ -21,6 +21,8 @@ import {
 import { toast } from "sonner";
 import { useAchievementTracker } from "@/stores/achievementTracker";
 import { usePomodoroStore, type TimerMode } from "@/stores/pomodoroStore";
+import { useProjectStore } from "@/stores/projectStore";
+import { useAuthStore } from "@/stores/authStore";
 
 // Audio generator class for creating sounds programmatically
 class AudioGenerator {
@@ -457,6 +459,9 @@ const FOCUS_SOUNDS = [
 ];
 
 export const FocusTimer = () => {
+  const tracker = useAchievementTracker();
+  const { user } = useAuthStore();
+  const { activeTask, addPomodoroSession } = useProjectStore();
   const {
     isRunning,
     timeLeft,
@@ -489,7 +494,6 @@ export const FocusTimer = () => {
   } = usePomodoroStore();
 
   const audioGeneratorRef = useRef<AudioGenerator | null>(null);
-  const tracker = useAchievementTracker();
 
   // Initialize audio generator
   useEffect(() => {
@@ -626,8 +630,36 @@ export const FocusTimer = () => {
     if (mode === "work") {
       toast.success("🎉 Work session completed! Time for a break.");
       tracker.trackFocusSession();
+      
+      // Record pomodoro session if there's an active task
+      if (activeTask && user) {
+        const today = new Date().toISOString().split('T')[0];
+        addPomodoroSession({
+          projectId: activeTask.projectId,
+          taskId: activeTask.id,
+          userId: user.id,
+          duration: workDuration,
+          completedAt: new Date().toISOString(),
+          date: today,
+          mode: "work",
+        });
+      }
     } else {
       toast.success("Break time over! Ready for another focused session?");
+      
+      // Record break session if there's an active task
+      if (activeTask && user) {
+        const today = new Date().toISOString().split('T')[0];
+        addPomodoroSession({
+          projectId: activeTask.projectId,
+          taskId: activeTask.id,
+          userId: user.id,
+          duration: mode === "shortBreak" ? shortBreakDuration : longBreakDuration,
+          completedAt: new Date().toISOString(),
+          date: today,
+          mode: mode,
+        });
+      }
     }
   };
 

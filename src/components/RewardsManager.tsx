@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import { useRewardsStore, Reward } from "@/stores/rewardsStore";
+import { EditRewardForm } from "./EditRewardForm";
 import { useXPStore } from "@/stores/xpStore";
 import { useAchievementsStore } from "@/stores/achievementsStore";
 import {
@@ -118,6 +119,7 @@ export const RewardsManager = () => {
     return xpActivitiesTotal + achievementsXP;
   };
   const [showForm, setShowForm] = useState(false);
+  const [editingReward, setEditingReward] = useState<Reward | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",

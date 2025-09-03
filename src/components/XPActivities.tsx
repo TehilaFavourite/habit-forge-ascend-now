@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import { useXPStore, XPActivity } from "@/stores/xpStore";
 import { useAchievementTracker } from "@/stores/achievementTracker";
+import { EditXPActivityForm } from "./EditXPActivityForm";
 import {
   Card,
   CardContent,
@@ -29,7 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Target, Star, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, Target, Star, Trash2, CheckCircle2, Edit } from "lucide-react";
 import { toast } from "sonner";
 
 export const XPActivities = () => {
@@ -46,6 +47,7 @@ export const XPActivities = () => {
   } = useXPStore();
   const tracker = useAchievementTracker();
   const [showForm, setShowForm] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
     xp: 10,
@@ -158,6 +160,14 @@ export const XPActivities = () => {
               >
                 {activity.xp} XP
               </Badge>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => setEditingActivity(activity)}
+                className='text-blue-500 hover:text-blue-700 hover:bg-blue-50'
+              >
+                <Edit className='h-4 w-4' />
+              </Button>
               <Button
                 variant='ghost'
                 size='sm'
@@ -290,6 +300,21 @@ export const XPActivities = () => {
           </Card>
         )}
       </div>
+
+      {/* Edit Activity Modal */}
+      {editingActivity && (
+        <Dialog open={true} onOpenChange={() => setEditingActivity(null)}>
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader>
+              <DialogTitle>Edit XP Activity</DialogTitle>
+            </DialogHeader>
+            <EditXPActivityForm
+              activity={editingActivity}
+              onClose={() => setEditingActivity(null)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Activity Form Modal */}
       {showForm && (
