@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import { useRewardsStore, Reward } from "@/stores/rewardsStore";
 import { useXPStore } from "@/stores/xpStore";
+import { useAchievementsStore } from "@/stores/achievementsStore";
 import {
   Card,
   CardContent,
@@ -98,6 +99,24 @@ export const RewardsManager = () => {
     getCurrentLevel,
   } = useRewardsStore();
   const { getTotalXPForUser } = useXPStore();
+  const { getUserAchievements, getAchievementProgress } = useAchievementsStore();
+
+  // Helper function to calculate total XP from all sources
+  const getTotalCombinedXP = (userId: string) => {
+    // Get XP from XP activities
+    const xpActivitiesTotal = getTotalXPForUser(userId);
+    
+    // Get XP from unlocked achievements
+    const userAchievements = getUserAchievements(userId);
+    const achievementProgress = getAchievementProgress(userId);
+    
+    const achievementsXP = userAchievements.reduce((total, achievement) => {
+      const progress = achievementProgress.find(p => p.achievementId === achievement.id);
+      return total + (progress?.unlocked ? achievement.xpReward : 0);
+    }, 0);
+    
+    return xpActivitiesTotal + achievementsXP;
+  };
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -110,7 +129,7 @@ export const RewardsManager = () => {
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
 
   const userRewards = getRewardsForUser(user?.id || "");
-  const totalXP = getTotalXPForUser(user?.id || "");
+  const totalXP = getTotalCombinedXP(user?.id || "");
   const currentLevel = getCurrentLevel(user?.id || "", totalXP);
   const nextReward = getNextReward(user?.id || "", totalXP);
 
