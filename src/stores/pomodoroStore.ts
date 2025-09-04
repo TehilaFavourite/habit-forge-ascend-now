@@ -157,6 +157,29 @@ export const usePomodoroStore = create<PomodoroState>()(
       
       completeSession: () => {
         const state = get();
+        
+        // Record the completed session if it was a work session with an active task
+        if (state.mode === "work") {
+          // Import the project store to access active task and record session
+          import('../stores/projectStore').then(({ useProjectStore }) => {
+            const projectState = useProjectStore.getState();
+            if (projectState.activeTask) {
+              const activeTask = projectState.activeTask;
+              const today = new Date().toISOString().split('T')[0];
+              
+              projectState.addPomodoroSession({
+                projectId: activeTask.projectId,
+                taskId: activeTask.id,
+                userId: activeTask.userId,
+                duration: state.workDuration,
+                completedAt: new Date().toISOString(),
+                date: today,
+                mode: "work"
+              });
+            }
+          });
+        }
+        
         const newCompletedSessions = state.completedSessions + 1;
         let nextMode: TimerMode;
         

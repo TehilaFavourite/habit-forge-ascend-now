@@ -143,7 +143,6 @@ export const useProjectStore = create<ProjectState>()(
             tasks: project.tasks.filter((task) => task.id !== id),
           })),
           sessions: state.sessions.filter((session) => session.taskId !== id),
-          activeTask: state.activeTask?.id === id ? null : state.activeTask,
         }));
       },
 

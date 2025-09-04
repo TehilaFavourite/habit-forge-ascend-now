@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import { useProjectStore, Project, ProjectTask } from "@/stores/projectStore";
+import { usePomodoroStore } from "@/stores/pomodoroStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,13 +42,28 @@ import {
 export const FocusDashboard = () => {
   const { user } = useAuthStore();
   const {
-    getProjectsForUser,
+    activeTask,
+    addProject,
+    updateProject,
     deleteProject,
+    addTask,
+    updateTask,
     deleteTask,
     setActiveTask,
-    activeTask,
+    getProjectsForUser,
     getSessionsForDate,
   } = useProjectStore();
+  
+  const {
+    isRunning,
+    mode,
+    startTimer,
+    pauseTimer,
+    resetTimer,
+    setMode,
+    getDurationForMode,
+    setTimeLeft,
+  } = usePomodoroStore();
 
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -75,7 +91,27 @@ export const FocusDashboard = () => {
   };
 
   const handleStartTask = (task: ProjectTask) => {
+    if (activeTask?.id === task.id) {
+      // If clicking on the same active task, toggle timer
+      if (isRunning) {
+        pauseTimer();
+        toast.success("Paused timer");
+      } else {
+        startTimer();
+        toast.success("Resumed timer");
+      }
+      return;
+    }
+    
+    // Set the task as active
     setActiveTask(task);
+    
+    // Set timer to work mode and start it
+    setMode("work");
+    const workDuration = getDurationForMode("work");
+    setTimeLeft(workDuration);
+    startTimer();
+    
     toast.success(`Started working on: ${task.name}`);
   };
 
@@ -91,10 +127,20 @@ export const FocusDashboard = () => {
   };
 
   const handleCompleteTask = (task: ProjectTask) => {
-    // This would be handled in the TaskForm component
-    setEditingTask(task);
-    setSelectedProject(projects.find(p => p.id === task.projectId) || null);
-    setShowTaskForm(true);
+    updateTask(task.id, { 
+      completed: true, 
+      completedAt: new Date().toISOString() 
+    });
+    
+    // If this was the active task, clear it
+    if (activeTask?.id === task.id) {
+      setActiveTask(null);
+      if (isRunning) {
+        pauseTimer();
+      }
+    }
+    
+    toast.success(`Task "${task.name}" marked as completed!`);
   };
 
   return (
