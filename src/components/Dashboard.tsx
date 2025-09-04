@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { HabitTracker } from "@/components/HabitTracker";
-import { FocusTimer } from "@/components/FocusTimer";
+import { FocusDashboard } from "@/components/FocusDashboard";
 import { TodoList } from "@/components/TodoList";
 import { XPActivities } from "@/components/XPActivities";
 import { RewardsManager } from "@/components/RewardsManager";
@@ -106,7 +106,7 @@ export const Dashboard = ({ activeTab: initialActiveTab }: DashboardProps = {}) 
 
   const tabs = [
     { id: "habits", label: "Habits", icon: Calendar, component: HabitTracker },
-    { id: "focus", label: "Focus", icon: Clock, component: FocusTimer },
+    { id: "focus", label: "Focus", icon: Clock, component: FocusDashboard },
     { id: "tasks", label: "Tasks", icon: CheckSquare, component: TodoList },
     { id: "xp", label: "XP Activities", icon: Zap, component: XPActivities },
     {

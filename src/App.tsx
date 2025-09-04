@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Dashboard } from "./components/Dashboard";
 import { HabitTracker } from "./components/HabitTracker";
-import { FocusTimer } from "./components/FocusTimer";
+
 import { TodoList } from "./components/TodoList";
 import { XPActivities } from "./components/XPActivities";
 import { RewardsManager } from "./components/RewardsManager";
