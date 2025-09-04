@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Plus, 
   Play, 
@@ -15,13 +16,15 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  CheckCircle
+  CheckCircle,
+  Timer
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ProjectForm } from "./ProjectForm";
 import { TaskForm } from "./TaskForm";
 import { PomodoroHistory } from "./PomodoroHistory";
+import { FocusTimer } from "./FocusTimer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -114,6 +117,25 @@ export const FocusDashboard = () => {
             </Button>
           </div>
         </div>
+
+        {/* Main Content with Tabs */}
+        <Tabs defaultValue="timer" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="timer" className="flex items-center gap-2">
+              <Timer className="w-4 h-4" />
+              Focus Timer
+            </TabsTrigger>
+            <TabsTrigger value="projects" className="flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              Projects
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="timer" className="mt-6">
+            <FocusTimer />
+          </TabsContent>
+
+          <TabsContent value="projects" className="mt-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -384,6 +406,8 @@ export const FocusDashboard = () => {
             ))
           )}
         </div>
+          </TabsContent>
+        </Tabs>
 
         {/* Forms and Modals */}
         <Dialog open={showProjectForm} onOpenChange={setShowProjectForm}>
