@@ -17,6 +17,7 @@ import {
   Trash2,
   Flame,
   Star,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -57,28 +58,51 @@ export const HabitCard = ({
   };
 
   return (
-    <Card className='group relative overflow-hidden bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
-      <CardContent className='p-6'>
-        {/* Header */}
-        <div className='flex items-start justify-between mb-4'>
-          <div className='flex items-center gap-3'>
-            <div
-              className='w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-lg'
-              style={{ backgroundColor: habit.color }}
-            >
-              {habit.icon}
+    <Card className="group relative overflow-hidden bg-gradient-subtle border border-border/40 shadow-gentle hover:shadow-elegant transition-all duration-500 hover:scale-[1.02] backdrop-blur-sm animate-fade-in">
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
+      
+      {/* Completion Glow Effect */}
+      {isCompletedToday && (
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary-glow/10 animate-pulse-slow" />
+      )}
+
+      <CardContent className="relative p-6 space-y-6">
+        {/* Header Section */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-4">
+            {/* Icon Container */}
+            <div className="relative">
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl shadow-elegant transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                style={{ backgroundColor: habit.color }}
+              >
+                {habit.icon}
+              </div>
+              {isCompletedToday && (
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-glow">
+                  <Check className="w-3 h-3 text-primary-foreground" />
+                </div>
+              )}
             </div>
-            <div>
-              <h3 className='font-semibold text-gray-800 text-lg'>
+
+            {/* Habit Info */}
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground text-lg leading-tight">
                 {habit.name}
               </h3>
-              <div className='flex items-center gap-2'>
-                <Badge variant='secondary' className='text-xs'>
+              {habit.description && (
+                <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+                  {habit.description}
+                </p>
+              )}
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs px-2 py-1 bg-secondary/60">
                   {habit.frequency}
                 </Badge>
                 {habit.isCore && (
-                  <Badge className='bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs'>
-                    <Star className='w-3 h-3 mr-1' />
+                  <Badge className="bg-gradient-primary text-primary-foreground text-xs px-2 py-1 shadow-sm">
+                    <Star className="w-3 h-3 mr-1 fill-current" />
                     Core
                   </Badge>
                 )}
@@ -86,76 +110,87 @@ export const HabitCard = ({
             </div>
           </div>
 
+          {/* Actions Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant='ghost'
-                size='sm'
-                className='opacity-0 group-hover:opacity-100 transition-opacity'
+                variant="ghost"
+                size="sm"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-secondary/60"
               >
-                <MoreVertical className='h-4 w-4' />
+                <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={onViewCalendar}>
-                <Calendar className='mr-2 h-4 w-4' />
+            <DropdownMenuContent align="end" className="w-48 shadow-elegant">
+              <DropdownMenuItem 
+                onClick={onViewCalendar}
+                className="cursor-pointer hover:bg-secondary/60"
+              >
+                <Calendar className="mr-2 h-4 w-4" />
                 View Calendar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(habit)}>
-                <Edit2 className='mr-2 h-4 w-4' />
+              <DropdownMenuItem 
+                onClick={() => onEdit(habit)}
+                className="cursor-pointer hover:bg-secondary/60"
+              >
+                <Edit2 className="mr-2 h-4 w-4" />
                 Edit Habit
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleDelete}
-                className='text-red-600 focus:text-red-600'
+                className="cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className='mr-2 h-4 w-4' />
+                <Trash2 className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        {/* Example inside your habit card/component */}
-        <div className='habit-card'>
-          <div className='habit-title'>{habit.name}</div>
-          <div className='habit-icon'>{habit.icon}</div>
-          {habit.description && (
-            <div className='habit-description text-gray-600 text-sm mt-1'>
-              {habit.description}
-            </div>
-          )}
-        </div>
-
-        {/* Streak Info */}
-        <div className='flex items-center justify-between mb-4'>
-          <div className='flex items-center gap-4'>
-            <div className='text-center'>
-              <div className='flex items-center gap-1 text-orange-600'>
-                <Flame className='h-4 w-4' />
-                <span className='font-bold text-lg'>{habit.currentStreak}</span>
+        {/* Streak Statistics */}
+        <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl border border-border/30">
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Flame className="h-5 w-5 text-primary animate-pulse" />
+                <span className="font-bold text-xl text-primary">
+                  {habit.currentStreak}
+                </span>
               </div>
-              <span className='text-xs text-gray-500'>Current</span>
+              <span className="text-xs text-muted-foreground font-medium">Current Streak</span>
             </div>
-            <div className='text-center'>
-              <div className='font-bold text-lg text-purple-600'>
-                {habit.bestStreak}
+            
+            <div className="w-px h-8 bg-border" />
+            
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Sparkles className="h-5 w-5 text-primary-glow" />
+                <span className="font-bold text-xl text-primary-glow">
+                  {habit.bestStreak}
+                </span>
               </div>
-              <span className='text-xs text-gray-500'>Best</span>
+              <span className="text-xs text-muted-foreground font-medium">Best Streak</span>
             </div>
           </div>
         </div>
+
         {/* Complete Button */}
         <Button
           onClick={handleToggleComplete}
-          className={`w-full transition-all transform ${
+          className={`w-full h-12 transition-all duration-300 font-medium ${
             isCompletedToday
-              ? "bg-green-500 hover:bg-green-600 text-white"
-              : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white hover:scale-105"
+              ? "bg-primary text-primary-foreground shadow-glow hover:shadow-elegant scale-[1.02]"
+              : "bg-gradient-primary text-primary-foreground hover:shadow-glow hover:scale-[1.02] shadow-gentle"
           }`}
         >
-          <Check className='mr-2 h-4 w-4' />
-          {isCompletedToday ? "Completed Today!" : "Mark Complete"}
+          <div className="flex items-center justify-center gap-2">
+            <Check className={`h-4 w-4 transition-transform duration-300 ${
+              isCompletedToday ? "scale-110" : ""
+            }`} />
+            <span className="text-sm">
+              {isCompletedToday ? "Completed Today!" : "Mark Complete"}
+            </span>
+          </div>
         </Button>
       </CardContent>
     </Card>
