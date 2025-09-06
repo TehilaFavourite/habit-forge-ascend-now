@@ -243,8 +243,8 @@ export const HabitCard = ({
           onClick={handleToggleComplete}
           className={`w-full h-14 transition-all duration-500 font-semibold text-base shadow-elegant hover:shadow-glow group/button ${
             isCompletedToday
-              ? "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground scale-[1.02] shadow-glow animate-pulse-slow"
-              : "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground hover:from-primary hover:to-primary-glow hover:scale-[1.02]"
+              ? "bg-gradient-to-r from-success to-success-glow text-success-foreground scale-[1.02] shadow-glow animate-pulse-slow"
+              : "bg-gradient-to-r from-success/90 to-success text-success-foreground hover:from-success hover:to-success-glow hover:scale-[1.02]"
           }`}
         >
           <div className="flex items-center justify-center gap-3">
