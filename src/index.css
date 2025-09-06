@@ -18,11 +18,11 @@ All colors MUST be HSL.
     --popover: 210 100% 98%;
     --popover-foreground: 200 15% 20%;
 
-    /* Soothing primary colors - soft teal */
-    --primary: 180 100% 35%;
-    --primary-foreground: 180 100% 98%;
-    --primary-light: 180 60% 85%;
-    --primary-glow: 180 80% 60%;
+    /* Soothing primary colors - soft purple */
+    --primary: 270 60% 45%;
+    --primary-foreground: 270 100% 98%;
+    --primary-light: 270 40% 85%;
+    --primary-glow: 270 50% 65%;
 
     /* Calming secondary colors - soft blue */
     --secondary: 210 60% 92%;
@@ -43,12 +43,12 @@ All colors MUST be HSL.
     /* Gentle borders */
     --border: 210 30% 88%;
     --input: 210 30% 90%;
-    --ring: 180 100% 35%;
+    --ring: 270 60% 45%;
 
     /* Calming gradients */
-    --gradient-calm: linear-gradient(135deg, hsl(180 100% 85%) 0%, hsl(210 80% 90%) 100%);
-    --gradient-soothing: linear-gradient(180deg, hsl(210 100% 97%) 0%, hsl(180 60% 95%) 100%);
-    --gradient-welcome: linear-gradient(135deg, hsl(240 60% 95%) 0%, hsl(180 70% 92%) 50%, hsl(210 80% 95%) 100%);
+    --gradient-calm: linear-gradient(135deg, hsl(270 60% 85%) 0%, hsl(210 80% 90%) 100%);
+    --gradient-soothing: linear-gradient(180deg, hsl(210 100% 97%) 0%, hsl(270 40% 95%) 100%);
+    --gradient-welcome: linear-gradient(135deg, hsl(240 60% 95%) 0%, hsl(270 50% 92%) 50%, hsl(210 80% 95%) 100%);
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted) / 0.3));
     
@@ -61,7 +61,7 @@ All colors MUST be HSL.
     --animation-pulse-slow: pulse 3s infinite;
 
     /* Calming shadows */
-    --shadow-calm: 0 8px 25px -8px hsl(180 100% 35% / 0.2);
+    --shadow-calm: 0 8px 25px -8px hsl(270 60% 45% / 0.2);
     --shadow-gentle: 0 4px 20px -4px hsl(210 40% 60% / 0.15);
     --shadow-welcome: 0 10px 35px -10px hsl(240 60% 70% / 0.2);
     --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
@@ -106,13 +106,13 @@ All colors MUST be HSL.
     --reflection-border: 200 30% 85%;
     --reflection-primary: 200 70% 60%;
     
-    --affirmation-bg: 120 100% 97%;
-    --affirmation-secondary: 120 60% 94%;
-    --affirmation-border: 120 30% 85%;
-    --affirmation-primary: 120 70% 60%;
+    --affirmation-bg: 280 60% 97%;
+    --affirmation-secondary: 280 40% 94%;
+    --affirmation-border: 280 25% 85%;
+    --affirmation-primary: 280 55% 60%;
 
     /* Journal theme colors */
-    --journal-primary: 156 39% 54%;
+    --journal-primary: 275 45% 54%;
     --journal-secondary: 25 95% 53%;
     --journal-accent: 292 76% 71%;
     --journal-glow: 45 93% 78%;
@@ -141,10 +141,10 @@ All colors MUST be HSL.
     --popover-foreground: 180 15% 85%;
 
     /* Dark soothing primary */
-    --primary: 180 80% 70%;
+    --primary: 270 50% 70%;
     --primary-foreground: 200 20% 8%;
-    --primary-light: 180 40% 25%;
-    --primary-glow: 180 60% 50%;
+    --primary-light: 270 30% 25%;
+    --primary-glow: 270 40% 50%;
 
     /* Dark calming secondary */
     --secondary: 200 15% 15%;
@@ -164,17 +164,17 @@ All colors MUST be HSL.
     /* Dark gentle borders */
     --border: 200 15% 18%;
     --input: 200 15% 15%;
-    --ring: 180 80% 70%;
+    --ring: 270 50% 70%;
 
     /* Dark calming gradients */
-    --gradient-calm: linear-gradient(135deg, hsl(200 20% 12%) 0%, hsl(180 30% 15%) 100%);
-    --gradient-soothing: linear-gradient(180deg, hsl(200 20% 8%) 0%, hsl(180 25% 12%) 100%);
-    --gradient-welcome: linear-gradient(135deg, hsl(240 20% 12%) 0%, hsl(180 25% 15%) 50%, hsl(200 20% 18%) 100%);
+    --gradient-calm: linear-gradient(135deg, hsl(200 20% 12%) 0%, hsl(270 30% 15%) 100%);
+    --gradient-soothing: linear-gradient(180deg, hsl(200 20% 8%) 0%, hsl(270 25% 12%) 100%);
+    --gradient-welcome: linear-gradient(135deg, hsl(240 20% 12%) 0%, hsl(270 25% 15%) 50%, hsl(200 20% 18%) 100%);
     
     /* Dark elegant shadows */
-    --shadow-calm: 0 4px 20px -4px hsl(180 80% 70% / 0.15);
+    --shadow-calm: 0 4px 20px -4px hsl(270 50% 70% / 0.15);
     --shadow-gentle: 0 2px 10px -2px hsl(200 30% 5% / 0.3);
-    --shadow-welcome: 0 8px 30px -8px hsl(180 60% 50% / 0.2);
+    --shadow-welcome: 0 8px 30px -8px hsl(270 40% 50% / 0.2);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -200,13 +200,13 @@ All colors MUST be HSL.
     --reflection-border: 200 15% 20%;
     --reflection-primary: 200 70% 60%;
     
-    --affirmation-bg: 120 40% 8%;
-    --affirmation-secondary: 120 27% 12%;
-    --affirmation-border: 120 15% 20%;
-    --affirmation-primary: 120 70% 60%;
+    --affirmation-bg: 280 30% 8%;
+    --affirmation-secondary: 280 20% 12%;
+    --affirmation-border: 280 15% 20%;
+    --affirmation-primary: 280 55% 60%;
 
     /* Journal theme colors - dark mode */
-    --journal-primary: 156 39% 54%;
+    --journal-primary: 275 45% 54%;
     --journal-secondary: 25 95% 53%;
     --journal-accent: 292 76% 71%;
     --journal-glow: 45 93% 78%;
