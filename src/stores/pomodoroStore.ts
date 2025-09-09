@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { timerService } from '../services/timerService';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { timerService } from "../services/timerService";
 
 export type TimerMode = "work" | "shortBreak" | "longBreak";
 
@@ -11,14 +11,14 @@ interface PomodoroState {
   mode: TimerMode;
   session: number;
   completedSessions: number;
-  
+
   // Settings
   workDuration: number;
   shortBreakDuration: number;
   longBreakDuration: number;
   sessionsUntilLongBreak: number;
   tickingEnabled: boolean;
-  
+
   // Sound state
   selectedSound: string;
   soundPlaying: boolean;
@@ -26,7 +26,7 @@ interface PomodoroState {
   audioContext: AudioContext | null;
   oscillator: OscillatorNode | null;
   gainNode: GainNode | null;
-  
+
   // Actions
   setIsRunning: (running: boolean) => void;
   setTimeLeft: (time: number | ((prev: number) => number)) => void;
@@ -41,7 +41,7 @@ interface PomodoroState {
   setSelectedSound: (sound: string) => void;
   setSoundPlaying: (playing: boolean) => void;
   setSoundVolume: (volume: number) => void;
-  
+
   // Utility actions
   getDurationForMode: (mode: TimerMode) => number;
   resetTimer: () => void;
@@ -71,12 +71,12 @@ export const usePomodoroStore = create<PomodoroState>()(
       audioContext: null,
       oscillator: null,
       gainNode: null,
-      
+
       // Setters
       setIsRunning: (running) => {
         const state = get();
         set({ isRunning: running });
-        
+
         if (running) {
           timerService.start(state.tick);
           if (state.tickingEnabled) {
@@ -88,8 +88,8 @@ export const usePomodoroStore = create<PomodoroState>()(
         }
       },
       setTimeLeft: (time) => {
-        if (typeof time === 'function') {
-          set(state => ({ timeLeft: time(state.timeLeft) }));
+        if (typeof time === "function") {
+          set((state) => ({ timeLeft: time(state.timeLeft) }));
         } else {
           set({ timeLeft: time });
         }
@@ -98,13 +98,15 @@ export const usePomodoroStore = create<PomodoroState>()(
       setSession: (session) => set({ session }),
       setCompletedSessions: (sessions) => set({ completedSessions: sessions }),
       setWorkDuration: (duration) => set({ workDuration: duration }),
-      setShortBreakDuration: (duration) => set({ shortBreakDuration: duration }),
+      setShortBreakDuration: (duration) =>
+        set({ shortBreakDuration: duration }),
       setLongBreakDuration: (duration) => set({ longBreakDuration: duration }),
-      setSessionsUntilLongBreak: (sessions) => set({ sessionsUntilLongBreak: sessions }),
+      setSessionsUntilLongBreak: (sessions) =>
+        set({ sessionsUntilLongBreak: sessions }),
       setTickingEnabled: (enabled) => {
         const state = get();
         set({ tickingEnabled: enabled });
-        
+
         if (enabled && state.isRunning) {
           timerService.startTicking();
         } else {
@@ -114,7 +116,7 @@ export const usePomodoroStore = create<PomodoroState>()(
       setSelectedSound: (sound) => set({ selectedSound: sound }),
       setSoundPlaying: (playing) => set({ soundPlaying: playing }),
       setSoundVolume: (volume) => set({ soundVolume: volume }),
-      
+
       // Utility functions
       getDurationForMode: (mode) => {
         const state = get();
@@ -127,25 +129,25 @@ export const usePomodoroStore = create<PomodoroState>()(
             return state.longBreakDuration * 60;
         }
       },
-      
+
       resetTimer: () => {
         const state = get();
         const duration = state.getDurationForMode(state.mode);
-        set({ 
+        set({
           timeLeft: duration,
-          isRunning: false 
+          isRunning: false,
         });
         timerService.stop(state.tick);
         timerService.stopTicking();
       },
-      
+
       pauseTimer: () => {
         const state = get();
         set({ isRunning: false });
         timerService.stop(state.tick);
         timerService.stopTicking();
       },
-      
+
       startTimer: () => {
         const state = get();
         set({ isRunning: true });
@@ -154,19 +156,19 @@ export const usePomodoroStore = create<PomodoroState>()(
           timerService.startTicking();
         }
       },
-      
+
       completeSession: () => {
         const state = get();
-        
+
         // Record the completed session if it was a work session with an active task
         if (state.mode === "work") {
           // Import the project store to access active task and record session
-          import('../stores/projectStore').then(({ useProjectStore }) => {
+          import("../stores/projectStore").then(({ useProjectStore }) => {
             const projectState = useProjectStore.getState();
             if (projectState.activeTask) {
               const activeTask = projectState.activeTask;
-              const today = new Date().toISOString().split('T')[0];
-              
+              const today = new Date().toISOString().split("T")[0];
+
               projectState.addPomodoroSession({
                 projectId: activeTask.projectId,
                 taskId: activeTask.id,
@@ -174,34 +176,40 @@ export const usePomodoroStore = create<PomodoroState>()(
                 duration: state.workDuration,
                 completedAt: new Date().toISOString(),
                 date: today,
-                mode: "work"
+                mode: "work",
               });
             }
           });
         }
-        
-        const newCompletedSessions = state.completedSessions + 1;
+
+        // Only count completed sessions for WORK, not breaks
+        const newCompletedSessions =
+          state.mode === "work"
+            ? state.completedSessions + 1
+            : state.completedSessions;
         let nextMode: TimerMode;
-        
+
         if (state.mode === "work") {
-          nextMode = newCompletedSessions % state.sessionsUntilLongBreak === 0 
-            ? "longBreak" 
-            : "shortBreak";
+          nextMode =
+            newCompletedSessions % state.sessionsUntilLongBreak === 0
+              ? "longBreak"
+              : "shortBreak";
         } else {
           nextMode = "work";
         }
-        
-        const newSession = state.mode === "work" ? state.session + 1 : state.session;
+
+        const newSession =
+          state.mode === "work" ? state.session + 1 : state.session;
         const duration = state.getDurationForMode(nextMode);
-        
+
         set({
           completedSessions: newCompletedSessions,
           mode: nextMode,
           session: newSession,
           timeLeft: duration,
-          isRunning: false
+          isRunning: false,
         });
-        
+
         timerService.stop(state.tick);
         timerService.stopTicking();
       },
@@ -212,17 +220,16 @@ export const usePomodoroStore = create<PomodoroState>()(
           state.completeSession();
           return;
         }
-        
+
         if (state.tickingEnabled) {
           timerService.playTick();
         }
-        
+
         set({ timeLeft: state.timeLeft - 1 });
       },
-
     }),
     {
-      name: 'pomodoro-storage',
+      name: "pomodoro-storage",
       partialize: (state) => ({
         timeLeft: state.timeLeft,
         mode: state.mode,
