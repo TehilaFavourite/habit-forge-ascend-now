@@ -236,6 +236,42 @@ export const HabitCard = ({
           </div>
         </div>
 
+        {/* 7-Day Visual Counter */}
+        <div className='mb-4'>
+          <div className='flex items-center justify-between mb-2'>
+            <span className='text-sm font-medium text-muted-foreground'>
+              Last 7 days
+            </span>
+            <span className='text-xs text-muted-foreground'>
+              {Object.values(habit.completions).filter(Boolean).length}{" "}
+              completed
+            </span>
+          </div>
+          <div className='flex gap-1'>
+            {Array.from({ length: 7 }, (_, i) => {
+              const date = new Date();
+              date.setDate(date.getDate() - (6 - i));
+              const dateStr = date.toISOString().split("T")[0];
+              const isCompleted = habit.completions[dateStr] || false;
+              const isToday = i === 6;
+
+              return (
+                <div
+                  key={i}
+                  className={`w-3 h-3 rounded-full border transition-all duration-200 ${
+                    isCompleted
+                      ? "bg-primary border-primary shadow-sm"
+                      : "bg-transparent border-muted-foreground/40"
+                  } ${isToday ? "ring-1 ring-primary/50" : ""}`}
+                  title={`${date.toLocaleDateString()} - ${
+                    isCompleted ? "Completed" : "Not completed"
+                  }`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
         {/* Motivational Progress Indicator */}
         {habit.currentStreak > 0 && (
           <div className='mb-6 animate-fade-in'>
