@@ -7,10 +7,10 @@ class TimerService {
 
   start(callback: () => void) {
     this.callbacks.add(callback);
-    
+
     if (!this.interval) {
       this.interval = setInterval(() => {
-        this.callbacks.forEach(cb => cb());
+        this.callbacks.forEach((cb) => cb());
       }, 1000);
     }
   }
@@ -19,7 +19,7 @@ class TimerService {
     if (callback) {
       this.callbacks.delete(callback);
     }
-    
+
     if (this.callbacks.size === 0 && this.interval) {
       clearInterval(this.interval);
       this.interval = null;
@@ -31,7 +31,8 @@ class TimerService {
     if (this.audioContext && this.tickOscillator) return;
 
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       this.tickOscillator = this.audioContext.createOscillator();
       this.tickGain = this.audioContext.createGain();
 
@@ -40,13 +41,16 @@ class TimerService {
       this.tickGain.connect(this.audioContext.destination);
 
       // Use a softer, more metronome-like tone
-      this.tickOscillator.frequency.setValueAtTime(440, this.audioContext.currentTime); // A4 note
-      this.tickOscillator.type = 'sine';
+      this.tickOscillator.frequency.setValueAtTime(
+        440,
+        this.audioContext.currentTime
+      ); // A4 note
+      this.tickOscillator.type = "sine";
       this.tickGain.gain.setValueAtTime(0, this.audioContext.currentTime);
 
       this.tickOscillator.start();
     } catch (error) {
-      console.warn('Ticking sound not supported:', error);
+      console.warn("Ticking sound not supported:", error);
     }
   }
 
@@ -60,7 +64,7 @@ class TimerService {
       this.tickGain.gain.linearRampToValueAtTime(0.02, now + 0.01);
       this.tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
     } catch (error) {
-      console.warn('Could not play tick:', error);
+      console.warn("Could not play tick:", error);
     }
   }
 

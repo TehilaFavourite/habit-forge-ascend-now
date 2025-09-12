@@ -516,7 +516,8 @@ const FOCUS_SOUNDS = [
 export const FocusTimer = () => {
   const tracker = useAchievementTracker();
   const { user } = useAuthStore();
-  const { activeTask, addPomodoroSession } = useProjectStore();
+  const { activeTask, addPomodoroSession, getSessionsForUser } =
+    useProjectStore();
   const {
     isRunning,
     timeLeft,
@@ -549,6 +550,21 @@ export const FocusTimer = () => {
   } = usePomodoroStore();
 
   const audioGeneratorRef = useRef<AudioGenerator | null>(null);
+
+  // Calculate daily and total progress
+  const allSessions = getSessionsForUser(user?.id || "");
+  const today = new Date().toISOString().split("T")[0];
+
+  // Get today's sessions (starting from 12 AM)
+  const todaySessions = allSessions.filter((session) => {
+    const sessionDate = session.date;
+    return sessionDate === today && session.mode === "work";
+  });
+
+  // Get total work sessions
+  const totalWorkSessions = allSessions.filter(
+    (session) => session.mode === "work"
+  );
 
   // Initialize audio generator
   useEffect(() => {
@@ -897,18 +913,42 @@ export const FocusTimer = () => {
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <TrendingUp className='h-5 w-5' />
-                  Today's Progress
+                  Progress Tracking
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='text-center'>
-                  <div className='text-4xl font-bold text-primary mb-2'>
-                    {completedSessions}
+                <div className='space-y-4'>
+                  {/* Today's Progress */}
+                  <div className='text-center'>
+                    <div className='text-3xl font-bold text-primary mb-1'>
+                      {todaySessions.length}
+                    </div>
+                    <div className='text-sm text-muted-foreground'>
+                      Today's Sessions
+                    </div>
+                    <div className='text-xs text-muted-foreground mt-1'>
+                      Since 12 AM
+                    </div>
                   </div>
-                  <div className='text-sm text-muted-foreground'>
-                    Completed Sessions
+
+                  {/* Divider */}
+                  <div className='w-full h-px bg-border/50' />
+
+                  {/* Total Progress */}
+                  <div className='text-center'>
+                    <div className='text-3xl font-bold text-primary-glow mb-1'>
+                      {totalWorkSessions.length}
+                    </div>
+                    <div className='text-sm text-muted-foreground'>
+                      Total Sessions
+                    </div>
+                    <div className='text-xs text-muted-foreground mt-1'>
+                      All Time
+                    </div>
                   </div>
-                  <div className='mt-4 text-xs text-muted-foreground'>
+
+                  {/* Next Break Info */}
+                  <div className='mt-4 text-xs text-muted-foreground text-center'>
                     Next long break in{" "}
                     {sessionsUntilLongBreak -
                       (completedSessions % sessionsUntilLongBreak)}{" "}
